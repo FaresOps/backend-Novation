@@ -42,6 +42,11 @@ app.use('/dimension', DimensionRouter);
 const Dimension = require('./models/dimension');
 
 
+const UserRouter = require('./routes/auth');
+app.use('/auth', UserRouter);
+const User = require('./models/user');
+
+
 
 
 
@@ -59,6 +64,9 @@ mongoose.connect('mongodb+srv://fares:fares@farescluster.ys3ggbm.mongodb.net/', 
 
 
 
-app.listen(4000, () => {
-    console.log('serveur in running in http://localhost:4000');
-});
+    const port = 3000;
+    //const ipAddress = '192.168.1.16'; // Replace with your PC's IPv4 address
+    app.listen(port,  () => {
+      console.log(`Server is running on http://localhost:${port}`);
+      
+    });
