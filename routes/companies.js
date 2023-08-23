@@ -18,7 +18,9 @@ router.post('/create', async (req, res) => {
             indusGroup: req.body.indusGroup,
             income: req.body.income,
             size: req.body.size,
-            preparedBy: req.body.preparedBy
+            preparedBy: req.body.preparedBy,
+            exportation : req.body.exportation,
+            multiproduction : req.body.multiproduction
         });
         await company.save();
         res.send('Company created successfully')
@@ -30,11 +32,20 @@ router.post('/create', async (req, res) => {
 
 //get all companies without deminsions
 router.get('/list', async (req, res) => {
-    const company = await Company.find();
+        const userId = req.query.userId;
+        const industryId = req.query.indusGroup;
+
+        let query = { preparedBy: userId };
+
+        if (industryId) {
+            query.indusGroup = industryId;
+        }
+        console.log(query);
+    const company = await Company.find(query);
     if (!company) {
         res.status(404).send('Company not found');
     }
-    res.send(company);
+    res.status(200).send(company);
 })
 
 
