@@ -1,9 +1,10 @@
 const { Company } = require('../models/company');
 const express = require('express');
+const verifyToken = require('../verifytoken');
 const router = express.Router();
 
 //get variables for graphe pie
-router.get('/', async (req, res) => {
+router.get('/',verifyToken, async (req, res) => {
     try {
         const totalexportcount = await Company.countDocuments({ exportation: true });
         const nontotalexportcount = await Company.countDocuments({ exportation: false });
