@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 
 const dimensionSchema = mongoose.Schema({
-    index: {
+    assessmentRecord: {
         type: String,
         required: true
     },
     dimension: {
+        type: String,
+        required: true
+    },
+    dimensionName:{
         type: String,
         required: true
     },
