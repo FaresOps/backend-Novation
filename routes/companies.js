@@ -1,9 +1,10 @@
 const { Company } = require('../models/company');
 const express = require('express');
+const verifyToken = require('../verifytoken');
 const router = express.Router();
 
 // create new company with out dimension
-router.post('/create', async (req, res) => {
+router.post('/create', verifyToken,async (req, res) => {
     try {
         const existingCompany = await Company.findOne({ companyName: req.body.companyName });
         if (existingCompany) {
@@ -18,6 +19,8 @@ router.post('/create', async (req, res) => {
             indusGroup: req.body.indusGroup,
             income: req.body.income,
             size: req.body.size,
+            exportation: req.body.exportation,
+            multiproduction: req.body.multiproduction,
             preparedBy: req.body.preparedBy
         });
         await company.save();
@@ -29,7 +32,7 @@ router.post('/create', async (req, res) => {
 
 
 //get all companies without deminsions
-router.get('/list', async (req, res) => {
+router.get('/list', verifyToken, async (req, res) => {
     const company = await Company.find();
     if (!company) {
         res.status(404).send('Company not found');
@@ -41,3 +44,5 @@ router.get('/list', async (req, res) => {
 
 
 module.exports = router
+
+
