@@ -31,7 +31,16 @@ router.post('/create', verifyToken,async (req, res) => {
 
 //get all companies without deminsions
 router.get('/list',  verifyToken,async (req, res) => {
-    const company = await Company.find();
+    const userId = req.query.userId;
+        const indusGroup = req.query.indusGroup;
+
+        let query = { preparedBy: userId };
+
+        if (indusGroup) {
+            query.indusGroup = indusGroup;
+        }
+
+        const company = await Company.find(query);
     if (!company) {
         res.status(404).send('Company not found');
     }
