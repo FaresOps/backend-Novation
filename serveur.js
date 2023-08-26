@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(cors());
 app.options('*', cors());
-//app.use(verifyToken);
+app.use(verifyToken);
 
 
 //final API Dashbord
@@ -25,6 +25,12 @@ app.use('/pie', PieRouter);
 const ContactRouter = require('./routes/contacts');
 app.use('/contact', ContactRouter);
 const Contact = require('./models/contact');
+
+const TeamRouter = require('./routes/teams');
+app.use('/team', TeamRouter);
+const Team = require('./models/team');
+
+
 
 
 //API Mobile APP
@@ -70,6 +76,3 @@ app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 
 });
-
-
-//module.exports = verifyToken;
