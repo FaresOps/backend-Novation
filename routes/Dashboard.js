@@ -6,13 +6,14 @@ router.get('/', async (req, res) => {
     try {
         // Number cas valide
         const casvalide = await Company.countDocuments();
+
         // graphe income
         const conditionsincome = [
-            { label: 'Less than 1000', query: { income: { $lt: 1000 } } },
-            { label: 'Between 1000 and 10000', query: { income: { $gte: 1000, $lte: 10000 } } },
-            { label: 'Between 10000 and 50000', query: { income: { $gt: 10000, $lte: 50000 } } },
-            { label: 'Between 50000 and 100000', query: { income: { $gt: 50000, $lte: 100000 } } },
-            { label: 'More than 100000', query: { income: { $gt: 100000 } } }
+            { label: '<1', query: { income: { $lt: 1000 } } },
+            { label: '[1.10]', query: { income: { $gte: 1000, $lte: 10000 } } },
+            { label: '10.50', query: { income: { $gt: 10000, $lte: 50000 } } },
+            { label: '50,1000', query: { income: { $gt: 50000, $lte: 100000 } } },
+            { label: '>1000', query: { income: { $gt: 100000 } } }
         ];
         const incomegraph = await Promise.all(
             conditionsincome.map(async condition => {
@@ -42,6 +43,20 @@ router.get('/', async (req, res) => {
         const multiprodcount = await Company.countDocuments({ multiproduction: true });
         const uniqueprodcount = await Company.countDocuments({ multiproduction: false });
 
+        //secteur d'activité graphs
+        const transportationcount = await Company.countDocuments({ indusGroup: 'Tarnportation' });
+        const chemicalcount = await Company.countDocuments({ indusGroup: 'Chemical' });
+        const electronicscount = await Company.countDocuments({ indusGroup: 'Electronics' });
+        const energycount = await Company.countDocuments({ indusGroup: 'Energy' });
+        const fastmovingconsumergoods = await Company.countDocuments({ indusGroup: 'Fast Moving Consumer Goods' });
+        const generalmanufacturingcount = await Company.countDocuments({ indusGroup: 'General Manufacturing' });
+        const metalandminingcount = await Company.countDocuments({ indusGroup: 'Metal and Mining' });
+        const advancedmanfacturingcount = await Company.countDocuments({ indusGroup: 'Advanced Manufacturing' });
+        const pharmaceuticalsandhealthcarecount = await Company.countDocuments({ indusGroup: 'Pharmaceuticals & Healthcare' });
+        const papercount = await Company.countDocuments({ indusGroup: 'Paper' });
+        const utilitiescount = await Company.countDocuments({ indusGroup: 'Utilities' });
+        const textilandleatherandapperels = await Company.countDocuments({ indusGroup: 'Textil, Leather, Apparels' });
+
         // Send the response containing all the data
         res.json({
             casvalide,
@@ -57,14 +72,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while processing the data' });
     }
 });
-
-
-
-
-
-
-
-
 
 
 module.exports = router
