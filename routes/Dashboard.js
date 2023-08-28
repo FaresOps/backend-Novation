@@ -44,18 +44,26 @@ router.get('/', async (req, res) => {
         const uniqueprodcount = await Company.countDocuments({ multiproduction: false });
 
         //secteur d'activité graphs
-        const transportationcount = await Company.countDocuments({ indusGroup: 'Tarnportation' });
-        const chemicalcount = await Company.countDocuments({ indusGroup: 'Chemical' });
-        const electronicscount = await Company.countDocuments({ indusGroup: 'Electronics' });
-        const energycount = await Company.countDocuments({ indusGroup: 'Energy' });
-        const fastmovingconsumergoods = await Company.countDocuments({ indusGroup: 'Fast Moving Consumer Goods' });
-        const generalmanufacturingcount = await Company.countDocuments({ indusGroup: 'General Manufacturing' });
-        const metalandminingcount = await Company.countDocuments({ indusGroup: 'Metal and Mining' });
-        const advancedmanfacturingcount = await Company.countDocuments({ indusGroup: 'Advanced Manufacturing' });
-        const pharmaceuticalsandhealthcarecount = await Company.countDocuments({ indusGroup: 'Pharmaceuticals & Healthcare' });
-        const papercount = await Company.countDocuments({ indusGroup: 'Paper' });
-        const utilitiescount = await Company.countDocuments({ indusGroup: 'Utilities' });
-        const textilandleatherandapperels = await Company.countDocuments({ indusGroup: 'Textil, Leather, Apparels' });
+        const conditionactivite = [
+            { label: 'Tarnportation', query: { indusGroup: 'Tarnportation' } },
+            { label: 'Chemical', query: { indusGroup: 'Chemical'  }},
+            { label: 'Electronics', query: { indusGroup: 'Electronics'  }},
+            { label: 'Energy', query: { indusGroup: 'Energy'  }},
+            { label: 'Fast Moving Consumer Goods', query: { indusGroup: 'Fast Moving Consumer Goods'  }},
+            { label: 'General Manufacturing', query: { indusGroup: 'General Manufacturing'  }},
+            { label: 'Metal and Mining', query: { indusGroup: 'Metal and Mining'  }},
+            { label: 'Advanced Manufacturing', query: { indusGroup: 'Advanced Manufacturing'  }},
+            { label: 'Pharmaceuticals & Healthcare', query: { indusGroup: 'Pharmaceuticals & Healthcare'  }},
+            { label: 'Paper', query: { indusGroup: 'Paper'  }},
+            { label: 'Utilities', query: { indusGroup: 'Utilities'  }},
+            { label: 'Textil, Leather, Apparels', query: { indusGroup: 'Textil, Leather, Apparels'  }},
+        ];
+        const secteurgraphe = await Promise.all(
+            conditionactivite.map(async condition => {
+                const count = await Company.countDocuments(condition.query);
+                return { label: condition.label, count }
+            })
+        );
 
         // Send the response containing all the data
         res.json({
@@ -65,13 +73,22 @@ router.get('/', async (req, res) => {
             totalexportcount,
             nontotalexportcount,
             multiprodcount,
-            uniqueprodcount
+            uniqueprodcount,
+            secteurgraphe
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An error occurred while processing the data' });
     }
 });
+
+
+
+
+
+
+
+
 
 
 module.exports = router
