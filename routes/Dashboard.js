@@ -8,11 +8,11 @@ router.get('/', async (req, res) => {
         const casvalide = await Company.countDocuments();
         // graphe income
         const conditionsincome = [
-            { label: 'Less than 1000', query: { income: { $lt: 1000 } } },
-            { label: 'Between 1000 and 10000', query: { income: { $gte: 1000, $lte: 10000 } } },
-            { label: 'Between 10000 and 50000', query: { income: { $gt: 10000, $lte: 50000 } } },
-            { label: 'Between 50000 and 100000', query: { income: { $gt: 50000, $lte: 100000 } } },
-            { label: 'More than 100000', query: { income: { $gt: 100000 } } }
+            { label: '< 1', query: { income: { $lt: 1000 } } },
+            { label: '[1, 10]', query: { income: { $gte: 1000, $lte: 10000 } } },
+            { label: '[10, 50]', query: { income: { $gt: 10000, $lte: 50000 } } },
+            { label: '[50, 100]', query: { income: { $gt: 50000, $lte: 100000 } } },
+            { label: '> 100', query: { income: { $gt: 100000 } } }
         ];
         const incomegraph = await Promise.all(
             conditionsincome.map(async condition => {
@@ -22,11 +22,11 @@ router.get('/', async (req, res) => {
         );
         // graphe size
         const conditionssize = [
-            { label: 'Less than 10', query: { size: { $lt: 10 } } },
-            { label: 'Between 10 and 100', query: { size: { $gte: 10, $lte: 100 } } },
-            { label: 'Between 100 and 500', query: { size: { $gt: 100, $lte: 500 } } },
-            { label: 'Between 500 and 1000', query: { size: { $gt: 500, $lte: 1000 } } },
-            { label: 'More than 1000', query: { size: { $gt: 1000 } } }
+            { label: '< 10', query: { size: { $lt: 10 } } },
+            { label: '[10, 100]', query: { size: { $gte: 10, $lte: 100 } } },
+            { label: '[100, 500]', query: { size: { $gt: 100, $lte: 500 } } },
+            { label: '[500, 1000]', query: { size: { $gt: 500, $lte: 1000 } } },
+            { label: '> 1000', query: { size: { $gt: 1000 } } }
         ];
         const sizegraphe = await Promise.all(
             conditionssize.map(async condition => {
@@ -57,7 +57,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while processing the data' });
     }
 });
-
 
 
 

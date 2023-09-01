@@ -28,7 +28,7 @@ router.post('/create', async (req, res) => {
 });
 
 
-//get all companies without deminsions
+//get all companies without demensions
 router.get('/list', async (req, res) => {
     const company = await Company.find();
     if (!company) {
