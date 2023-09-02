@@ -6,13 +6,14 @@ router.get('/', async (req, res) => {
     try {
         // Number cas valide
         const casvalide = await Company.countDocuments();
+
         // graphe income
         const conditionsincome = [
-            { label: '< 1', query: { income: { $lt: 1000 } } },
-            { label: '[1, 10]', query: { income: { $gte: 1000, $lte: 10000 } } },
-            { label: '[10, 50]', query: { income: { $gt: 10000, $lte: 50000 } } },
-            { label: '[50, 100]', query: { income: { $gt: 50000, $lte: 100000 } } },
-            { label: '> 100', query: { income: { $gt: 100000 } } }
+            { label: 'Less than 1000', query: { income: { $lt: 1000 } } },
+            { label: 'Between 1000 and 10000', query: { income: { $gte: 1000, $lte: 10000 } } },
+            { label: 'Between 10000 and 50000', query: { income: { $gt: 10000, $lte: 50000 } } },
+            { label: 'Between 50000 and 100000', query: { income: { $gt: 50000, $lte: 100000 } } },
+            { label: 'More than 100000', query: { income: { $gt: 100000 } } }
         ];
         const incomegraph = await Promise.all(
             conditionsincome.map(async condition => {
@@ -42,6 +43,28 @@ router.get('/', async (req, res) => {
         const multiprodcount = await Company.countDocuments({ multiproduction: true });
         const uniqueprodcount = await Company.countDocuments({ multiproduction: false });
 
+        //secteur d'activité graphs
+        const conditionactivite = [
+            { label: 'Tarnportation', query: { indusGroup: 'Tarnportation' } },
+            { label: 'Chemical', query: { indusGroup: 'Chemical'  }},
+            { label: 'Electronics', query: { indusGroup: 'Electronics'  }},
+            { label: 'Energy', query: { indusGroup: 'Energy'  }},
+            { label: 'Fast Moving Consumer Goods', query: { indusGroup: 'Fast Moving Consumer Goods'  }},
+            { label: 'General Manufacturing', query: { indusGroup: 'General Manufacturing'  }},
+            { label: 'Metal and Mining', query: { indusGroup: 'Metal and Mining'  }},
+            { label: 'Advanced Manufacturing', query: { indusGroup: 'Advanced Manufacturing'  }},
+            { label: 'Pharmaceuticals & Healthcare', query: { indusGroup: 'Pharmaceuticals & Healthcare'  }},
+            { label: 'Paper', query: { indusGroup: 'Paper'  }},
+            { label: 'Utilities', query: { indusGroup: 'Utilities'  }},
+            { label: 'Textil, Leather, Apparels', query: { indusGroup: 'Textil, Leather, Apparels'  }},
+        ];
+        const secteurgraphe = await Promise.all(
+            conditionactivite.map(async condition => {
+                const count = await Company.countDocuments(condition.query);
+                return { label: condition.label, count }
+            })
+        );
+
         // Send the response containing all the data
         res.json({
             casvalide,
@@ -50,7 +73,8 @@ router.get('/', async (req, res) => {
             totalexportcount,
             nontotalexportcount,
             multiprodcount,
-            uniqueprodcount
+            uniqueprodcount,
+            secteurgraphe
         });
     } catch (error) {
         console.error(error);

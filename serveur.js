@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const morgan = require('morgan');
+const verifyToken = require('./verifytoken');
+
 const app = express();
 
 
@@ -10,6 +12,8 @@ app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(cors());
 app.options('*', cors());
+app.use(verifyToken);
+
 
 //final API Dashbord
 const DashboardRouter = require('./routes/Dashboard');
@@ -21,6 +25,12 @@ app.use('/pie', PieRouter);
 const ContactRouter = require('./routes/contacts');
 app.use('/contact', ContactRouter);
 const Contact = require('./models/contact');
+
+const TeamRouter = require('./routes/teams');
+app.use('/team', TeamRouter);
+const Team = require('./models/team');
+
+
 
 
 //API Mobile APP
@@ -46,10 +56,6 @@ const UserRouter = require('./routes/auth');
 app.use('/auth', UserRouter);
 const User = require('./models/user');
 
-
-
-
-
 mongoose.connect('mongodb+srv://fares:fares@farescluster.ys3ggbm.mongodb.net/', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -64,9 +70,9 @@ mongoose.connect('mongodb+srv://fares:fares@farescluster.ys3ggbm.mongodb.net/', 
 
 
 
-    const port = 3000;
-    //const ipAddress = '192.168.1.16'; // Replace with your PC's IPv4 address
-    app.listen(port,  () => {
-      console.log(`Server is running on http://localhost:${port}`);
-      
-    });
+const port = 3000;
+//const ipAddress = '192.168.1.16'; // Replace with your PC's IPv4 address
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+
+});

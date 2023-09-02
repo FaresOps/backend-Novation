@@ -45,7 +45,8 @@ const companySchema = mongoose.Schema({
         required: true,
     },
     preparedBy: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref : 'User',
         required: true
     }
 })
