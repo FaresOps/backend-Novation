@@ -3,22 +3,22 @@ const mongoose = require('mongoose');
 
 
 const TeamSchema = new mongoose.Schema({
-    name: { 
+    name: {
         type: String,
-         required: true,
+        required: true,
     },
     age: {
-        type : Number,
-        required : true
+        type: Number,
+        required: true
     },
     mobileNumber: {
-         type: String, 
-         required: true 
+        type: String,
+        required: true
     },
-    email :{
-        type: String, 
+    email: {
+        type: String,
         required: true,
     }
-  });
-  
-  exports.Result = mongoose.model('Team', TeamSchema);
+});
+
+exports.Team = mongoose.model('Team', TeamSchema);
