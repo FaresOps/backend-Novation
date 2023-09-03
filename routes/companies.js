@@ -4,7 +4,7 @@ const verifyToken = require('../verifytoken');
 const router = express.Router();
 
 // create new company with out dimension
-router.post('/create', verifyToken,async (req, res) => {
+router.post('/create',async (req, res) => {
     try {
         const existingCompany = await Company.findOne({ companyName: req.body.companyName });
         if (existingCompany) {

@@ -7,7 +7,7 @@ const router = express.Router();
 
 // create new contact
 
-router.post('/create', verifyToken, async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         const existingCompany = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
         if (existingCompany) {
