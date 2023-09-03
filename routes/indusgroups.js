@@ -5,7 +5,7 @@ const router = express.Router();
 
 // create industrie groupe 
 
-router.post('/create', verifyToken, async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         let indusgroup = new IndusGroup({
             indusName: req.body.indusName
@@ -19,7 +19,7 @@ router.post('/create', verifyToken, async (req, res) => {
 
 
 //get all list of industries groupe
-router.get('/list', verifyToken, async (req, res) => {
+router.get('/list', async (req, res) => {
     const induslist = await IndusGroup.find();
     if (!induslist) {
         res.status(404).send({ message: 'No indusgroup found' });
