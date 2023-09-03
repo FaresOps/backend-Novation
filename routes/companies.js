@@ -8,13 +8,15 @@ router.post('/create', verifyToken,async (req, res) => {
     try {
         const existingCompany = await Company.findOne({ companyName: req.body.companyName });
         if (existingCompany) {
-            return res.send('Company already exists');
+            return res.statusCode(401).send('Company already exists');
         }
         let company = new Company({
             assessmentRecord: req.body.assessmentRecord,
             companyName: req.body.companyName,
             bern: req.body.bern,
             address: req.body.address,
+            multiproduction : req.body.multiproduction,
+            exportation : req.body.exportation,
             dated: req.body.dated,
             indusGroup: req.body.indusGroup,
             income: req.body.income,
@@ -22,7 +24,7 @@ router.post('/create', verifyToken,async (req, res) => {
             preparedBy: req.body.preparedBy
         });
         await company.save();
-        res.send('Company created successfully')
+        res.send({"message":'Company created successfully',"companyId":company.companyId})
     } catch (err) {
         console.log(err);
     }

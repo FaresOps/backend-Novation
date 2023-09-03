@@ -42,7 +42,7 @@ router.post('/register', async (req, res) => {
         "name":user.name
       }
       const secretKey='123456';
-      const token = jwt.sign({ userId: payload}, secretKey, { expiresIn: '1h' });
+      const token = jwt.sign({ userId: payload}, secretKey, { expiresIn: '8h' });
       res.status(200).json({ message: 'Login successful!','token':token,'data':user });
     } catch (err) {
       

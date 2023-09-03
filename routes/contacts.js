@@ -21,7 +21,7 @@ router.post('/create', verifyToken, async (req, res) => {
                 email: req.body.email,
             });
             await contact.save()
-            res.send('save contact effectué avec succes!');
+            res.statusCode(200).send('save contact effectué avec succes!');
         }
     } catch (err) {
         console.log(err);
