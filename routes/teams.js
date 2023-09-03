@@ -19,12 +19,20 @@ router.post('/create', async (req, res) => {
 });
 
 
-router.get('/', async (req, res) => {
-    const teamlist = await Team.find();
-    if (!teamlist) {
-        res.status(404).send({ message: 'No team found' });
+router.get('/list', async (req, res) => {
+    try {
+        const teamlist = await Team.find();
+        if (!teamlist) {
+            res.status(404).send({ message: 'No teams found' });
+        } else {
+            res.send(teamlist);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while fetching teams' });
     }
-    res.send(teamlist);
-})
+});
+
+
 
 module.exports = router
