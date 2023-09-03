@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 //create scope(date of assesments)
-router.post('/create', verifyToken, async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         let scope = new Scope({
             assessmentRecord: req.body.assessmentRecord,

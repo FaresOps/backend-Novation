@@ -44,6 +44,11 @@ const companySchema = mongoose.Schema({
         type: Boolean,
         required: true,
     },
+    factorysection: {
+        type: String,
+        enum: ['whole company', 'section of the company'],
+        required: true,
+    },
     preparedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref : 'User',

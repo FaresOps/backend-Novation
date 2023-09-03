@@ -5,7 +5,7 @@ const verifyToken = require('../verifytoken');
 const router = express.Router();
 
 // create new company with out dimension
-router.post('/create', verifyToken,async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         const existingCompany = await Company.findOne({ companyName: req.body.companyName });
         if (existingCompany) {
@@ -30,7 +30,7 @@ router.post('/create', verifyToken,async (req, res) => {
 
 
 //get all companies without deminsions
-router.get('/list', verifyToken,async (req, res) => {
+router.get('/list', verifyToken, async (req, res) => {
     const company = await Company.find();
     if (!company) {
         res.status(404).send('Company not found');
