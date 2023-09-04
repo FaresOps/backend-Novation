@@ -1,16 +1,37 @@
 const { Contact } = require('../models/contact');
 const { Company } = require('../models/company');
-const verifyToken = require('../verifytoken');
+// const verifyToken = require('../verifytoken');
 const express = require('express');
 const router = express.Router();
 
 
-// create new contact
+// router.post('/create', async (req, res) => {
+//     try {
+//         const existingCompany = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
+//         if (existingCompany) {
+//             let contact = new Contact({
+//                 assessmentRecord: req.body.assessmentRecord,
+//                 title: req.body.title,
+//                 firstName: req.body.firstName,
+//                 lastName: req.body.lastName,
+//                 designation: req.body.designation,
+//                 mobileNumber: req.body.mobileNumber,
+//                 email: req.body.email,
+//             });
+//             await contact.save()
+//             res.statusCode(200).send('save contact effectué avec succes!');
+//         }
+//     } catch (err) {
+//         console.log(err);
+//     }
+// })
 
 router.post('/create', async (req, res) => {
     try {
         const existingCompany = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
+
         if (existingCompany) {
+
             let contact = new Contact({
                 assessmentRecord: req.body.assessmentRecord,
                 title: req.body.title,
@@ -21,12 +42,15 @@ router.post('/create', async (req, res) => {
                 email: req.body.email,
             });
             await contact.save()
-            res.statusCode(200).send('save contact effectué avec succes!');
+            res.send('save contact effectué avec succes!');
         }
     } catch (err) {
         console.log(err);
     }
 });
+
+
+
 
 // get list of contact
 

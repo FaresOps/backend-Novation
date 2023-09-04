@@ -11,8 +11,8 @@ router.post('/create', async (req, res) => {
             mobileNumber: req.body.mobileNumber,
             email: req.body.email,
         });
-        await contact.save()
-        res.send('save team effectué avec succes!');           
+        await team.save()
+        res.send('save team effectué avec succes!');
     } catch (err) {
         console.log(err);
     }

@@ -7,7 +7,7 @@ const contactSchema = mongoose.Schema({
         ref: 'Company',
         required: true
     },
-    title :{
+    title: {
         type: String,
         required: true
     },
