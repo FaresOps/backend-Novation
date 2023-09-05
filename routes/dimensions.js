@@ -7,17 +7,13 @@ const router = express.Router();
 // creation new dimension (dimension database)
 router.post('/create', verifyToken, async (req, res) => {
     try {
-        const existingCompany = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
-        if (existingCompany) {
+        const existingDimension = await Dimension.findOne({ id: req.body._id });
+        if (existingDimension) {
             let dimension = new Dimension({
                 assessmentRecord: req.body.assessmentRecord,
                 dimension: req.body.dimension,
-                dimensionName: req.body.dimensionName,
                 dimensionAssement: req.body.dimensionAssement,
-                bandName: req.body.bandName,
                 bandComment: req.body.bandComment,
-                definitions: req.body.definitions,
-                description: req.body.description
             });
             await dimension.save()
             res.send('save dimention effectué avec succes!');

@@ -2,7 +2,7 @@ const { Company } = require('../models/company');
 const mongoose = require('mongoose');
 
 const scopeSchema = mongoose.Schema({
-    assessmentRecord:{
+    assessmentRecord: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company',
         required: true

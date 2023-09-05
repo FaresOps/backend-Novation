@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
-const { Company } = require('../models/company');
 
 const contactSchema = mongoose.Schema({
     assessmentRecord: {
         type: String,
-        required: true
+        required: true,
+    },
+    companyName:{
+        type: String,
+        required: true,
     },
     title: {
         type: String,

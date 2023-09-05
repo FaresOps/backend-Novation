@@ -8,10 +8,10 @@ const router = express.Router();
 router.post('/create', async (req, res) => {
     try {
         const existingCompany = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
-
         if (existingCompany) {
             const contact = new Contact({
                 assessmentRecord: req.body.assessmentRecord,
+                companyName: req.body.companyName,
                 title: req.body.title,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,

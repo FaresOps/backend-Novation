@@ -24,11 +24,10 @@ const companySchema = mongoose.Schema({
         required: true,
     },
     indusGroup: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'IndusGroup',
+        type: String,
         required: true
     },
-    income:{
+    income: {
         type: Number,
         required: true,
     },
@@ -46,12 +45,10 @@ const companySchema = mongoose.Schema({
     },
     factorysection: {
         type: String,
-        enum: ['whole company', 'section of the company'],
         required: true,
     },
     preparedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref : 'User',
+        type: String,
         required: true
     }
 })

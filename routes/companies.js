@@ -4,27 +4,28 @@ const verifyToken = require('../verifytoken');
 const router = express.Router();
 
 // create new company with out dimension
-router.post('/create',async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
-        const existingCompany = await Company.findOne({ companyName: req.body.companyName });
+        const existingCompany = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
         if (existingCompany) {
-            return res.statusCode(401).send('Company already exists');
+            return res.status(401).send('Company already exists');
         }
         let company = new Company({
             assessmentRecord: req.body.assessmentRecord,
             companyName: req.body.companyName,
             bern: req.body.bern,
             address: req.body.address,
-            multiproduction : req.body.multiproduction,
-            exportation : req.body.exportation,
+            multiproduction: req.body.multiproduction,
+            exportation: req.body.exportation,
             dated: req.body.dated,
             indusGroup: req.body.indusGroup,
             income: req.body.income,
             size: req.body.size,
+            factorysection: req.body.factorysection,
             preparedBy: req.body.preparedBy
         });
         await company.save();
-        res.send({"message":'Company created successfully',"companyId":company.companyId})
+        res.send({ "message": 'Company created successfully', "companyId": company.companyId })
     } catch (err) {
         console.log(err);
     }

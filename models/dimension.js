@@ -5,33 +5,24 @@ const dimensionSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    //mel 1 lil 16
     dimension: {
-        type: String,
+        type: Number,
+        min: 1,
+        max: 16,
         required: true
     },
-    dimensionName: {
-        type: String,
-        required: true
-    },
+    //mel 1 ---- 5
     dimensionAssement: {
-        type: String,
-        required: true
-    },
-    bandName: {
-        type: String,
-        required: true
-    },
-    bandComment: {
         type: Number,
         min: 0,
         max: 5,
         required: true
     },
-    definitions: {
+    //list 
+    bandComment: {
         type: String,
-    },
-    description: {
-        type: String,
+        required: true
     }
 })
 
