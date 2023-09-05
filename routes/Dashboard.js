@@ -6,7 +6,6 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         // Number cas valide
-        const casvalide = await Company.countDocuments();
 
         const records = await Company.find({}, 'assessmentRecord');
         const assessmentRecordsList = records.map(item => item.assessmentRecord);
@@ -19,6 +18,7 @@ router.get('/', async (req, res) => {
                 casnonvalide++;
             }
         }
+        const casvalide = await Company.countDocuments();
 
 
         // graphe income
@@ -58,26 +58,26 @@ router.get('/', async (req, res) => {
         const uniqueprodcount = await Company.countDocuments({ multiproduction: false });
 
         // secteur d'activité graphs
-        // const conditionactivite = [
-        //     { label: 'Transportation', query: { indusGroup: 'Transportation' } },
-        //     { label: 'Chemical', query: { indusGroup: 'Chemical' } },
-        //     { label: 'Electronics', query: { indusGroup: 'Electronics' } },
-        //     { label: 'Energy', query: { indusGroup: 'Energy' } },
-        //     { label: 'Fast Moving Consumer Goods', query: { indusGroup: 'Fast Moving Consumer Goods' } },
-        //     { label: 'General Manufacturing', query: { indusGroup: 'General Manufacturing' } },
-        //     { label: 'Metal and Mining', query: { indusGroup: 'Metal and Mining' } },
-        //     { label: 'Advanced Manufacturing', query: { indusGroup: 'Advanced Manufacturing' } },
-        //     { label: 'Pharmaceuticals & Healthcare', query: { indusGroup: 'Pharmaceuticals & Healthcare' } },
-        //     { label: 'Paper', query: { indusGroup: 'Paper' } },
-        //     { label: 'Utilities', query: { indusGroup: 'Utilities' } },
-        //     { label: 'Textil, Leather, Apparels', query: { indusGroup: 'Textil, Leather, Apparels' } },
-        // ];
-        // const secteurgraphe = await Promise.all(
-        //     conditionactivite.map(async condition => {
-        //         const count = await Company.countDocuments(condition.query);
-        //         return { label: condition.label, count }
-        //     })
-        // );
+        const conditionactivite = [
+            { label: 'Transportation', query: { indusGroup: 'Transportation' } },
+            { label: 'Chemical', query: { indusGroup: 'Chemical' } },
+            { label: 'Electronics', query: { indusGroup: 'Electronics' } },
+            { label: 'Energy', query: { indusGroup: 'Energy' } },
+            { label: 'Fast Moving Consumer Goods', query: { indusGroup: 'Fast Moving Consumer Goods' } },
+            { label: 'General Manufacturing', query: { indusGroup: 'General Manufacturing' } },
+            { label: 'Metal and Mining', query: { indusGroup: 'Metal and Mining' } },
+            { label: 'Advanced Manufacturing', query: { indusGroup: 'Advanced Manufacturing' } },
+            { label: 'Pharmaceuticals & Healthcare', query: { indusGroup: 'Pharmaceuticals & Healthcare' } },
+            { label: 'Paper', query: { indusGroup: 'Paper' } },
+            { label: 'Utilities', query: { indusGroup: 'Utilities' } },
+            { label: 'Textil, Leather, Apparels', query: { indusGroup: 'Textil, Leather, Apparels' } },
+        ];
+        const secteurgraphe = await Promise.all(
+            conditionactivite.map(async condition => {
+                const count = await Company.countDocuments(condition.query);
+                return { label: condition.label, count }
+            })
+        );
 
         // Send the response containing all the data
         res.json({
@@ -89,7 +89,7 @@ router.get('/', async (req, res) => {
             nontotalexportcount,
             multiprodcount,
             uniqueprodcount,
-            // secteurgraphe
+            secteurgraphe
         });
     } catch (error) {
         console.error(error);
