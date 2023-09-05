@@ -9,7 +9,7 @@ const dimensionSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    dimensionName:{
+    dimensionName: {
         type: String,
         required: true
     },
@@ -29,11 +29,9 @@ const dimensionSchema = mongoose.Schema({
     },
     definitions: {
         type: String,
-        required: true
     },
     description: {
         type: String,
-        required: true
     }
 })
 
