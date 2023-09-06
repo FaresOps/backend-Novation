@@ -7,65 +7,65 @@ const kpicategorieSchema = mongoose.Schema({
     },
     productivity: {
         assetandEquipmentEfficiency: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         workforceEfficiency: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         utilitiesEfficiency: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         inventoryEfficiency: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         materialsEfficiency: {
-            type: Number,
+            type: Boolean,
             required: true
         }
     },
     quality: {
         processquality: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         productquality: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         safety: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         Security: {
-            type: Number,
+            type: Boolean,
             required: true
         }
     },
     flexibility: {
         planningandschedulingEffectiveness: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         producutionFlexebility: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         workforceFlexebility: {
-            type: Number,
+            type: Boolean,
             required: true
         }
     },
     Speed: {
         timetomarket: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         timetodelivery: {
-            type: Number,
+            type: Boolean,
             required: true
         }
     }

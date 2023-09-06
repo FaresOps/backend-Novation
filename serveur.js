@@ -26,16 +26,26 @@ const ContactRouter = require('./routes/contacts');
 app.use('/contact', ContactRouter);
 const Contact = require('./models/contact');
 
-const TeamRouter = require('./routes/teams');
-app.use('/team', TeamRouter);
-const Team = require('./models/team');
 
 
 
 
 //API Mobile APP
 
-const AnnualrevenueRouter  = require('./routes/anualrevenues');
+
+const PanninghorizonRouter = require('./routes/planninghorizons');
+app.use('/Panninghorizon', PanninghorizonRouter);
+const Panninghorizon = require('./models/planninghorizon');
+
+
+
+const KpicategorieRouter = require('./routes/kpicategories');
+app.use('/kpicategorie', KpicategorieRouter);
+const Kpicategorie = require('./models/kpicategorie');
+
+
+
+const AnnualrevenueRouter = require('./routes/anualrevenues');
 app.use('/annualrevenue', AnnualrevenueRouter);
 const Annualrevenue = require('./models/annualrevenue');
 
