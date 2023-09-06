@@ -58,4 +58,18 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+
+router.delete('/delete-all', async (req, res) => {
+    try {
+        // You might want to add some additional logic to confirm this action
+        // before deleting all data, such as requiring a specific request parameter.
+
+        await Contact.deleteMany({}); // This will delete all contacts
+        res.status(200).send('All contacts deleted successfully');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 module.exports = router;

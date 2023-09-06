@@ -42,3 +42,20 @@ router.post('/create', async (req, res) => {
 });
 
 module.exports = router;
+
+
+
+// {
+//     "assessmentRecord": "PQ9456",
+//     "companyName": "GreenEco Solutions",
+//     "bern": "876543",
+//     "address": "456 Maple Lane",
+//     "dated": "2023-06-26",
+//     "indusGroup": "General Manufacturing",
+//     "income": 7000000,
+//     "size": 140,
+//     "exportation": true,
+//     "multiproduction": false,
+//     "factorysection": "whole company",
+//     "preparedBy": "ayoub magherbi"
+// }
