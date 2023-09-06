@@ -3,24 +3,26 @@ const express = require('express');
 const verifyToken = require('../verifytoken');
 const router = express.Router();
 
-//get variables for graphe pie
+// Get variables for pie chart
 router.get('/', async (req, res) => {
     try {
-        const totalexportcount = await Company.countDocuments({ exportation: true });
-        const nontotalexportcount = await Company.countDocuments({ exportation: false });
-        const multiprodcount = await Company.countDocuments({ multiproduction: true });
-        const uniqueprodcount = await Company.countDocuments({ multiproduction: false });
+        const pieData = await Company.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalexportcount: { $sum: { $cond: [{ $eq: ['$exportation', true] }, 1, 0] } },
+                    nontotalexportcount: { $sum: { $cond: [{ $eq: ['$exportation', false] }, 1, 0] } },
+                    multiprodcount: { $sum: { $cond: [{ $eq: ['$multiproduction', true] }, 1, 0] } },
+                    uniqueprodcount: { $sum: { $cond: [{ $eq: ['$multiproduction', false] }, 1, 0] } }
+                }
+            }
+        ]);
 
-        if (totalexportcount === 0 && nontotalexportcount === 0 && multiprodcount === 0 && uniqueprodcount === 0) {
+        if (!pieData || pieData.length === 0) {
             return res.status(404).json({ message: 'No data found' });
         }
 
-        const response = {
-            totalexportcount,
-            nontotalexportcount,
-            multiprodcount,
-            uniqueprodcount
-        };
+        const response = pieData[0]; // Extract the result from the aggregation
 
         res.json(response);
     } catch (error) {
@@ -29,4 +31,4 @@ router.get('/', async (req, res) => {
     }
 });
 
-module.exports = router
+module.exports = router;

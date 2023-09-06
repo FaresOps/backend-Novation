@@ -35,6 +35,10 @@ const Team = require('./models/team');
 
 //API Mobile APP
 
+const AnnualrevenueRouter  = require('./routes/anualrevenues');
+app.use('/annualrevenue', AnnualrevenueRouter);
+const Annualrevenue = require('./models/annualrevenue');
+
 const ScopeRouter = require('./routes/scopes');
 app.use('/Scope', ScopeRouter);
 const Scope = require('./models/scope');

@@ -3,14 +3,15 @@ const express = require('express');
 const verifyToken = require('../verifytoken');
 const router = express.Router();
 
-// create new company with out dimension
+// Create a new company without dimensions
 router.post('/create', async (req, res) => {
     try {
         const existingCompany = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
         if (existingCompany) {
             return res.status(401).send('Company already exists');
         }
-        let company = new Company({
+
+        const companyData = {
             assessmentRecord: req.body.assessmentRecord,
             companyName: req.body.companyName,
             bern: req.body.bern,
@@ -23,27 +24,30 @@ router.post('/create', async (req, res) => {
             size: req.body.size,
             factorysection: req.body.factorysection,
             preparedBy: req.body.preparedBy
-        });
+        };
+
+        const company = new Company(companyData);
         await company.save();
-        res.send({ "message": 'Company created successfully', "companyId": company.companyId })
+
+        res.status(201).json({ message: 'Company created successfully', companyId: company.companyId });
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
 });
 
-
-//get all companies without deminsions
+// Get a list of companies without dimensions
 router.get('/list', async (req, res) => {
-    const company = await Company.find();
-    if (!company) {
-        res.status(404).send('Company not found');
+    try {
+        const companies = await Company.find();
+        if (!companies || companies.length === 0) {
+            return res.status(404).send('Companies not found');
+        }
+        res.status(200).send(companies);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
-    res.status(200).send(company);
-})
+});
 
-
-
-
-module.exports = router
-
-
+module.exports = router;

@@ -1,81 +1,92 @@
 const { Company } = require('../models/company');
-const { Dimension } = require('../models/dimension');
 const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        // Number cas valide
-
-        const records = await Company.find({}, 'assessmentRecord');
-        const assessmentRecordsList = records.map(item => item.assessmentRecord);
-        let casnonvalide = 0;
-
-        for (const RecordsList of assessmentRecordsList) {
-            const nameCount = await Company.countDocuments({ assessmentRecord: RecordsList });
-
-            if (nameCount < 16) {
-                casnonvalide++;
-            }
-        }
         const casvalide = await Company.countDocuments();
 
+        // Number cas valide
+        const pipeline = [
+            {
+                $group: {
+                    _id: '$assessmentRecord',
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $match: {
+                    count: { $lt: 16 }
+                }
+            },
+            {
+                $count: 'casnonvalide'
+            }
+        ];
+
+        const casnonvalideResult = await Company.aggregate(pipeline);
+        const casnonvalide = casnonvalideResult.length > 0 ? casnonvalideResult[0].casnonvalide : 0;
 
         // graphe income
-        const conditionsincountCompany = [
-            { label: '<1', query: { income: { $lt: 1000 } } },
-            { label: '[1.10]', query: { income: { $gte: 1000, $lte: 10000 } } },
-            { label: '10.50', query: { income: { $gt: 10000, $lte: 50000 } } },
-            { label: '50,1000', query: { income: { $gt: 50000, $lte: 100000 } } },
-            { label: '>1000', query: { income: { $gt: 100000 } } }
+        const incomePipeline = [
+            {
+                $bucket: {
+                    groupBy: '$income',
+                    boundaries: [0, 1000, 10000, 50000, 100000, Infinity],
+                    default: 'Other',
+                    output: {
+                        count: { $sum: 1 }
+                    }
+                }
+            }
         ];
-        const incomegraph = await Promise.all(
-            conditionsincountCompany.map(async condition => {
-                const count = await Company.countDocuments(condition.query);
-                return { label: condition.label, count };
-            })
-        );
+
+        const incomegraph = await Company.aggregate(incomePipeline);
+
         // graphe size
-        const conditionssize = [
-            { label: 'Less than 10', query: { size: { $lt: 10 } } },
-            { label: 'Between 10 and 100', query: { size: { $gte: 10, $lte: 100 } } },
-            { label: 'Between 100 and 500', query: { size: { $gt: 100, $lte: 500 } } },
-            { label: 'Between 500 and 1000', query: { size: { $gt: 500, $lte: 1000 } } },
-            { label: 'More than 1000', query: { size: { $gt: 1000 } } }
+        const sizePipeline = [
+            {
+                $bucket: {
+                    groupBy: '$size',
+                    boundaries: [0, 10, 100, 500, 1000, Infinity],
+                    default: 'Other',
+                    output: {
+                        count: { $sum: 1 }
+                    }
+                }
+            }
         ];
-        const sizegraphe = await Promise.all(
-            conditionssize.map(async condition => {
-                const count = await Company.countDocuments(condition.query);
-                return { label: condition.label, count }
-            })
-        );
-        //graphe exportatrice
+
+        const sizegraphe = await Company.aggregate(sizePipeline);
+
+        // graphe exportatrice
         const totalexportcount = await Company.countDocuments({ exportation: true });
-        const nontotalexportcount = await Company.countDocuments({ exportation: false });
+        const nontotalexportcount = casvalide - totalexportcount;
 
         // graphe de production
         const multiprodcount = await Company.countDocuments({ multiproduction: true });
-        const uniqueprodcount = await Company.countDocuments({ multiproduction: false });
+        const uniqueprodcount = casvalide - multiprodcount;
 
         // secteur d'activité graphs
         const conditionactivite = [
-            { label: 'Transportation', query: { indusGroup: 'Transportation' } },
-            { label: 'Chemical', query: { indusGroup: 'Chemical' } },
-            { label: 'Electronics', query: { indusGroup: 'Electronics' } },
-            { label: 'Energy', query: { indusGroup: 'Energy' } },
-            { label: 'Fast Moving Consumer Goods', query: { indusGroup: 'Fast Moving Consumer Goods' } },
-            { label: 'General Manufacturing', query: { indusGroup: 'General Manufacturing' } },
-            { label: 'Metal and Mining', query: { indusGroup: 'Metal and Mining' } },
-            { label: 'Advanced Manufacturing', query: { indusGroup: 'Advanced Manufacturing' } },
-            { label: 'Pharmaceuticals & Healthcare', query: { indusGroup: 'Pharmaceuticals & Healthcare' } },
-            { label: 'Paper', query: { indusGroup: 'Paper' } },
-            { label: 'Utilities', query: { indusGroup: 'Utilities' } },
-            { label: 'Textil, Leather, Apparels', query: { indusGroup: 'Textil, Leather, Apparels' } },
+            'Transportation',
+            'Chemical',
+            'Electronics',
+            'Energy',
+            'Fast Moving Consumer Goods',
+            'General Manufacturing',
+            'Metal and Mining',
+            'Advanced Manufacturing',
+            'Pharmaceuticals & Healthcare',
+            'Paper',
+            'Utilities',
+            'Textil, Leather, Apparels'
         ];
+
         const secteurgraphe = await Promise.all(
             conditionactivite.map(async condition => {
-                const count = await Company.countDocuments(condition.query);
-                return { label: condition.label, count }
+                const count = await Company.countDocuments({ indusGroup: condition });
+                return { label: condition, count };
             })
         );
 
@@ -97,13 +108,4 @@ router.get('/', async (req, res) => {
     }
 });
 
-
-
-
-
-
-
-
-
-
-module.exports = router
+module.exports = router;

@@ -3,29 +3,32 @@ const express = require('express');
 const verifyToken = require('../verifytoken');
 const router = express.Router();
 
-// create industrie groupe 
-
+// Create an industry group
 router.post('/create', async (req, res) => {
     try {
-        let indusgroup = new IndusGroup({
+        const indusgroup = new IndusGroup({
             indusName: req.body.indusName
         });
         await indusgroup.save();
-        res.send('indusgroup saved successfully')
+        res.status(201).send('Industry group saved successfully');
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
-})
+});
 
-
-//get all list of industries groupe
+// Get a list of all industry groups
 router.get('/list', async (req, res) => {
-    const induslist = await IndusGroup.find();
-    if (!induslist) {
-        res.status(404).send({ message: 'No indusgroup found' });
+    try {
+        const induslist = await IndusGroup.find();
+        if (!induslist || induslist.length === 0) {
+            return res.status(404).send({ message: 'No industry groups found' });
+        }
+        res.send(induslist);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
-    res.send(induslist);
-})
+});
 
-
-module.exports = router
+module.exports = router;

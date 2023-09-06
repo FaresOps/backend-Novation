@@ -4,44 +4,41 @@ const verifyToken = require('../verifytoken');
 
 const router = express.Router();
 
-// creation new dimension (dimension database)
+// Create a new dimension (dimension database)
 router.post('/create', verifyToken, async (req, res) => {
     try {
-        const existingDimension = await Dimension.findOne({ id: req.body._id });
+        const existingDimension = await Dimension.findOne({ _id: req.body._id });
         if (existingDimension) {
-            let dimension = new Dimension({
-                assessmentRecord: req.body.assessmentRecord,
-                dimension: req.body.dimension,
-                dimensionAssement: req.body.dimensionAssement,
-                bandComment: req.body.bandComment,
-            });
-            await dimension.save()
-            res.send('save dimention effectué avec succes!');
+            return res.status(401).send('Dimension already exists');
         }
+
+        const dimension = new Dimension({
+            assessmentRecord: req.body.assessmentRecord,
+            dimension: req.body.dimension,
+            dimensionAssement: req.body.dimensionAssement,
+            bandComment: req.body.bandComment,
+        });
+
+        await dimension.save();
+        res.send('Dimension saved successfully!');
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
 });
 
-
-//list of all dimensions
+// List all dimensions
 router.get('/list', verifyToken, async (req, res) => {
-    const dimensionlist = await Dimension.find();
-    if (!dimensionlist) {
-        res.status(404).send({ message: 'No dimension Found' });
+    try {
+        const dimensionList = await Dimension.find();
+        if (!dimensionList || dimensionList.length === 0) {
+            return res.status(404).send({ message: 'No dimensions found' });
+        }
+        res.send(dimensionList);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
-    res.send(dimensionlist);
-})
+});
 
-module.exports = router
-
-
-// {
-//     "index": "Process",
-//     "dimension": "operations",
-//     "dimensionAssement": "Vertical Integration",
-//     "bandName": "Undefined",
-//     "bandComment": "0",
-//     "definitions" : " Vertical processes are not explicitly defined.",
-//     "description":"Resource planning and technical production processes are managed and executed in silos, based on informal or ad-hoc methods."
-// }
+module.exports = router;
