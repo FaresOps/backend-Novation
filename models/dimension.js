@@ -22,7 +22,6 @@ const dimensionSchema = mongoose.Schema({
     //list 
     bandComment: {
         type: String,
-        required: true
     }
 })
 
