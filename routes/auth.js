@@ -68,4 +68,14 @@ router.post('/logout', async (req, res) => {
   }
 });
 
+
+router.get('/list', async (req, res) => {
+  try {
+    const userList = await User.find({}, '-password'); // Exclude the password field
+    res.status(200).json(userList);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch user list!', error: err });
+  }
+});
+
 module.exports = router;
