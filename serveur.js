@@ -26,8 +26,17 @@ const ContactRouter = require('./routes/contacts');
 app.use('/contact', ContactRouter);
 const Contact = require('./models/contact');
 
+// const DegreebicRouter = require('./routes/degreebics');
+// app.use('/degreebics', DegreebicRouter);
+// const Degreebics = require('./models/degreebic');
 
+// const DegreecostRouter = require('./routes/degreecosts');
+// app.use('/degreecost', DegreecostRouter);
+// const Degreecost = require('./models/degreecost');
 
+// const DegreekpiRouter = require('./routes/degreekpis');
+// app.use('/degreekpi', DegreekpiRouter);
+// const Degreekpi = require('./models/degreekpi');
 
 
 //API Mobile APP

@@ -5,69 +5,75 @@ const kpicategorieSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    productivity: {
-        assetandEquipmentEfficiency: {
-            type: Boolean,
-            required: true
-        },
-        workforceEfficiency: {
-            type: Boolean,
-            required: true
-        },
-        utilitiesEfficiency: {
-            type: Boolean,
-            required: true
-        },
-        inventoryEfficiency: {
-            type: Boolean,
-            required: true
-        },
-        materialsEfficiency: {
-            type: Boolean,
-            required: true
-        }
+    assetandEquipmentEfficiency: {
+        type: Number,
+        enum: [0, 1],
+        required: true
     },
-    quality: {
-        processquality: {
-            type: Boolean,
-            required: true
-        },
-        productquality: {
-            type: Boolean,
-            required: true
-        },
-        safety: {
-            type: Boolean,
-            required: true
-        },
-        Security: {
-            type: Boolean,
-            required: true
-        }
+    workforceEfficiency: {
+        type: Number,
+        enum: [0, 1],
+        required: true
     },
-    flexibility: {
-        planningandschedulingEffectiveness: {
-            type: Boolean,
-            required: true
-        },
-        producutionFlexebility: {
-            type: Boolean,
-            required: true
-        },
-        workforceFlexebility: {
-            type: Boolean,
-            required: true
-        }
+    utilitiesEfficiency: {
+        type: Number,
+        enum: [0, 1],
+        required: true
     },
-    Speed: {
-        timetomarket: {
-            type: Boolean,
-            required: true
-        },
-        timetodelivery: {
-            type: Boolean,
-            required: true
-        }
+    inventoryEfficiency: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    materialsEfficiency: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    processquality: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    productquality: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    safety: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    Security: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    planningandschedulingEffectiveness: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    producutionFlexebility: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    workforceFlexebility: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    timetomarket: {
+        type: Number,
+        enum: [0, 1],
+        required: true
+    },
+    timetodelivery: {
+        type: Number,
+        enum: [0, 1],
+        required: true
     }
 })
 
