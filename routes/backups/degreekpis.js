@@ -1,7 +1,7 @@
 // Import required modules
 const express = require('express');
 const router = express.Router();
-const { Degreekpi } = require('../models/degreekpi');
+const { Degreekpi } = require('../models/backups/degreekpi');
 
 // Create a new Degreekpi entry
 router.post('/create', async (req, res) => {
@@ -19,7 +19,6 @@ router.post('/create', async (req, res) => {
 
         // Save the Degreekpi entry to the database
         await degreekpi.save();
-
         res.status(201).json({ message: 'Degreekpi created successfully' });
     } catch (err) {
         console.error(err);

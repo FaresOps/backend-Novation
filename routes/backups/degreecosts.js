@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Degreecost } = require('../models/degreecost');
+const { Degreecost } = require('../models/backups/degreecost');
 
 // Create a new Degreecost entry
 router.post('/create', async (req, res) => {

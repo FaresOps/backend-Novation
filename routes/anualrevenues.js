@@ -1,6 +1,6 @@
 const { Annualrevenue } = require('../models/annualrevenue');
 const { Company } = require('../models/company');
-const { Anualrevcost } = require('../models/anualrevcost');
+const { Anualrevcost } = require('../models/resultats/anualrevcost'); //
 const express = require('express');
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Degreebic = require('../models/degreebic');
+const Degreebic = require('../../models/backups/degreebic');
 
 // Create a new Degreebic entry
 router.post('/create', async (req, res) => {
