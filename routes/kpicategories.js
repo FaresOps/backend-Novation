@@ -344,7 +344,6 @@ router.post('/create', async (req, res) => {
             return res.status(404).send('Degreebic data not found');
         }
 
-        // Step 3: Retrieve the dimension data and perform calculations
         const dimension = await Dimension.find({ assessmentRecord });
         if (!dimension) {
             return res.status(404).send('Dimension data not found');
@@ -375,7 +374,6 @@ router.post('/create', async (req, res) => {
             strategyandgovernance: degreebic.organization.strategyandgovernance[indusGroup] - (dimension.dimension === 16),
         };
 
-        // Step 4: Save the results to Bicresultats
         const bicresults = new Bicresultats({
             assessmentRecord,
             process: [process],
