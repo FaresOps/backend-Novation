@@ -11,7 +11,7 @@ const annualrevenueSchema = mongoose.Schema({
         max: 100,
         required: true
     },
-    depreciation: { 
+    depreciation: {
         type: Number,
         min: 0,
         max: 100,
