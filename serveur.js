@@ -28,7 +28,7 @@ const Contact = require('./models/contact');
 
 // const DegreebicRouter = require('./routes/degreebics');
 // app.use('/degreebics', DegreebicRouter);
-// const Degreebics = require('./models/degreebic');
+// const Degreebics = require('./models/backups/degreebic');
 
 // const DegreecostRouter = require('./routes/degreecosts');
 // app.use('/degreecost', DegreecostRouter);

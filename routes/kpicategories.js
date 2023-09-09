@@ -1,6 +1,9 @@
 const { Company } = require('../models/company');
 const { Kpicategorie } = require('../models/kpicategorie');
 const { Kpiresults } = require('../models/resultats/kpiresults');
+// const { Degreebic } = require('../models/backups/degreebic');
+const { Dimension } = require('../models/dimension');
+const { Bicresultats } = require('../models/resultats/bicresultats');
 const express = require('express');
 const router = express.Router();
 
@@ -330,8 +333,58 @@ router.post('/create', async (req, res) => {
         });
         await kpiresult.save();
 
+        const company = await Company.findOne({ assessmentRecord });
+        if (!company) {
+            return res.status(404).send('Company not found');
+        }
+        const { indusGroup } = company;
 
-        res.status(201).json({ message: 'Kpicategorie and kpi results  created successfully' });
+        const degreebic = await Degreebic.findOne({ indusGroup });
+        if (!degreebic) {
+            return res.status(404).send('Degreebic data not found');
+        }
+
+        // Step 3: Retrieve the dimension data and perform calculations
+        const dimension = await Dimension.find({ assessmentRecord });
+        if (!dimension) {
+            return res.status(404).send('Dimension data not found');
+        }
+
+        const process = {
+            verticalintegration: degreebic.process.verticalintegration[indusGroup] - (dimension.dimension === 1),
+            horizontalintegration: degreebic.process.horizontalintegration[indusGroup] - (dimension.dimension === 2),
+            integratedproductlifecycle: degreebic.process.integratedproductlifecycle[indusGroup] - (dimension.dimension === 3),
+        };
+
+        const technology = {
+            shopfloorautomation: degreebic.technology.shopfloorautomation[indusGroup] - (dimension.dimension === 4),
+            enterpriseautomation: degreebic.technology.enterpriseautomation[indusGroup] - (dimension.dimension === 5),
+            facilityautomation: degreebic.technology.facilityautomation[indusGroup] - (dimension.dimension === 6),
+            shopfloorconnectivity: degreebic.technology.shopfloorconnectivity[indusGroup] - (dimension.dimension === 7),
+            entrepriseconnectivity: degreebic.technology.entrepriseconnectivity[indusGroup] - (dimension.dimension === 8),
+            facilityconnectivity: degreebic.technology.facilityconnectivity[indusGroup] - (dimension.dimension === 9),
+            shopfloorintelligence: degreebic.technology.shopfloorintelligence[indusGroup] - (dimension.dimension === 10),
+            entrepriseintelligence: degreebic.technology.entrepriseintelligence[indusGroup] - (dimension.dimension === 11),
+            facilityintelligence: degreebic.technology.facilityintelligence[indusGroup] - (dimension.dimension === 12),
+        };
+
+        const organization = {
+            workforcelearninganddevelopment: degreebic.organization.workforcelearninganddevelopment[indusGroup] - (dimension.dimension === 13),
+            leadershipcompetency: degreebic.organization.leadershipcompetency[indusGroup] - (dimension.dimension === 14),
+            interandintracompanycollaboration: degreebic.organization.interandintracompanycollaboration[indusGroup] - (dimension.dimension === 15),
+            strategyandgovernance: degreebic.organization.strategyandgovernance[indusGroup] - (dimension.dimension === 16),
+        };
+
+        // Step 4: Save the results to Bicresultats
+        const bicresults = new Bicresultats({
+            assessmentRecord,
+            process: [process],
+            technology: [technology],
+            organization: [organization],
+        });
+
+        await bicresults.save();
+        res.status(201).json({ message: 'Kpicategorie and kpi results and bicresulats  created successfully' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });

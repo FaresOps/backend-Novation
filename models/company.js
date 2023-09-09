@@ -1,17 +1,20 @@
 const mongoose = require('mongoose');
 
 const validIndusGroups = [
-    'Transportation',
-    'Chemicals',
-    'Energy',
-    'Fast Moving Consumer Goods',
-    'Metal and Mining',
-    "General Manufacturing",
-   " Advanced Manufacturing",
-    "Pharmaceuticals & Healthcare",
-    "Paper",
-    "Utilities",
-    "Textil, Leather, Apparels",
+    'Aerospace',
+    'Automotive',
+    'Electronics',
+    'Energy & Chemical (Downstream)',
+    'Food & Beverages',
+    'General Manufacturing',
+    'Logistics',
+    'Machinery & Equipment',
+    'Medical Technology',
+    'Oil & Gas',
+    'Pharmaceuticals',
+    'Precision Instruments',
+    'Textile, Clothing, Leather & Footwear',
+    'Semiconductors'
 ];
 
 const companySchema = mongoose.Schema({

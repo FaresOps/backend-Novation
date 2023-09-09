@@ -23,41 +23,41 @@ router.post('/create', async (req, res) => {
             operational,
         });
 
-        // Save the Planning Horizon to the database
         await planningHorizon.save();
 
         // Create Kpiresults based on conditions
-        let planning;
+        //problem
+        // let planning;
 
-        if (strategic && !tactical && !operational) {
-            planning = new Planningresults({
-                assessmentRecord,
-                costfactor: 30,
-                kpifactor: 40,
-                proximityfactor: 30,
-            });
-        } else if (tactical && !strategic && !operational) {
-            planning = new Planningresults({
-                assessmentRecord,
-                costfactor: 45,
-                kpifactor: 30,
-                proximityfactor: 25,
-            });
-        } else if (operational && !strategic && !tactical) {
-            planning = new Planningresults({
-                assessmentRecord,
-                costfactor: 60,
-                kpifactor: 20,
-                proximityfactor: 20,
-            });
-        }
+        // if (strategic && !tactical && !operational) {
+        //     planning = new Planningresults({
+        //         assessmentRecord: req.body.assessmentRecord,
+        //         costfactor: 30,
+        //         kpifactor: 40,
+        //         proximityfactor: 30,
+        //     });
+        //     await planning.save();
+        // } else if (tactical && !strategic && !operational) {
+        //     planning = new Planningresults({
+        //         assessmentRecord: req.body.assessmentRecord,
+        //         costfactor: 45,
+        //         kpifactor: 30,
+        //         proximityfactor: 25,
+        //     });
+        //     await planning.save();
 
-        // Save the Planningresult if planning is defined
-        if (planning) {
-            await planning.save();
-        }
+        // } else if (operational && !strategic && !tactical) {
+        //     planning = new Planningresults({
+        //         assessmentRecord: req.body.assessmentRecord,
+        //         costfactor: 60,
+        //         kpifactor: 20,
+        //         proximityfactor: 20,
+        //     });
+        //     await planning.save();
 
-        // Send a single response to the client
+
+
+
         res.status(201).json({ message: 'Planning Horizon and planning result created successfully' });
     } catch (err) {
         console.error(err);
