@@ -29,17 +29,49 @@ router.post('/create', async (req, res) => {
         const company = new Company(companyData);
         await company.save();
 
-        res.status(201).json({ message: 'Company created successfully', companyId: company.companyId });
+        res.status(201).json({ message: 'Company created successfully', assessmentRecord: company.assessmentRecord });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send('Internal Server Error'+err);
     }
 });
 
 // Get a list of companies without dimensions
-router.get('/list', async (req, res) => {
+router.get('/element/:assessmentRecord', verifyToken,async(req,res) => {
     try {
-        const companies = await Company.find();
+        const companyAssessement = req.params.assessmentRecord;
+
+        // Use the findById method to find the company by its ID
+        const company = await Company.findOne({assessmentRecord:companyAssessement});
+
+        if (!company) {
+            // If the company with the specified ID is not found, return a 404 response
+            res.status(404).send('Company not found');
+        } else {
+            // If the company is found, return it in the response
+            res.status(200).send(company);
+        }
+    } catch (error) {
+        // Handle any potential errors here
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+
+});
+router.get('/list', verifyToken,async (req, res) => {
+    try {
+        const { preparedBy, indusGroup } = req.query;
+
+        let filter = {};
+
+        if (preparedBy) {
+            filter.preparedBy = preparedBy;
+        }
+
+        if (indusGroup) {
+            filter.indusGroup = indusGroup;
+        }
+        const companies = await Company.find(filter);
         if (!companies || companies.length === 0) {
             return res.status(404).send('Companies not found');
         }

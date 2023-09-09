@@ -94,8 +94,8 @@ mongoose.connect('mongodb+srv://fares:fares@farescluster.ys3ggbm.mongodb.net/', 
 
 
 const port = 3000;
-//const ipAddress = '192.168.1.16'; // Replace with your PC's IPv4 address
-app.listen(port, () => {
+const ipAddress = '0.0.0.0'; // Replace with your PC's IPv4 address
+app.listen(port,  ipAddress,() => {
     console.log(`Server is running on http://localhost:${port}`);
 
 });

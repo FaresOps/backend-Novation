@@ -33,7 +33,16 @@ router.post('/create', async (req, res) => {
 // Get a list of contacts
 router.get('/list', async (req, res) => {
     try {
-        const contactlist = await Contact.find();
+        const { assessmentRecord} = req.query;
+
+        let filter = {};
+
+        if (assessmentRecord) {
+            filter.assessmentRecord = assessmentRecord;
+        }
+
+
+        const contactlist = await Contact.find(filter);
         if (!contactlist || contactlist.length === 0) {
             return res.status(404).send({ message: 'No contacts found' });
         }
