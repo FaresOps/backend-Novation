@@ -115,8 +115,4 @@ const degreebicSchema = new mongoose.Schema({
     ]
 });
 
-
-
-const Degreebic = mongoose.model('Degreebic', degreebicSchema);
-
-module.exports = Degreebic;
+exports.Degreebic = mongoose.model('Degreebic', degreebicSchema);

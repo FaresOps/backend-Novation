@@ -26,43 +26,46 @@ router.post('/create', async (req, res) => {
         await planningHorizon.save();
 
         // Create Kpiresults based on conditions
-        //problem
-        // let planning;
+        // problem
+        let planning;
+        if (strategic && !tactical && !operational) {
+            planning = new Planningresults({
+                assessmentRecord: req.body.assessmentRecord,
+                costfactor: 30,
+                kpifactor: 40,
+                proximityfactor: 30,
+            });
+        } else if (tactical && !strategic && !operational) {
+            planning = new Planningresults({
+                assessmentRecord: req.body.assessmentRecord,
+                costfactor: 45,
+                kpifactor: 30,
+                proximityfactor: 25,
+            });
+        } else if (operational && !strategic && !tactical) {
+            planning = new Planningresults({
+                assessmentRecord: req.body.assessmentRecord,
+                costfactor: 60,
+                kpifactor: 20,
+                proximityfactor: 20,
+            });
+        }
 
-        // if (strategic && !tactical && !operational) {
-        //     planning = new Planningresults({
-        //         assessmentRecord: req.body.assessmentRecord,
-        //         costfactor: 30,
-        //         kpifactor: 40,
-        //         proximityfactor: 30,
-        //     });
-        //     await planning.save();
-        // } else if (tactical && !strategic && !operational) {
-        //     planning = new Planningresults({
-        //         assessmentRecord: req.body.assessmentRecord,
-        //         costfactor: 45,
-        //         kpifactor: 30,
-        //         proximityfactor: 25,
-        //     });
-        //     await planning.save();
-
-        // } else if (operational && !strategic && !tactical) {
-        //     planning = new Planningresults({
-        //         assessmentRecord: req.body.assessmentRecord,
-        //         costfactor: 60,
-        //         kpifactor: 20,
-        //         proximityfactor: 20,
-        //     });
-        //     await planning.save();
-
-
-
+        if (planning) {
+            try {
+                await planning.save();
+            } catch (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Error saving Planningresults' });
+            }
+        }
 
         res.status(201).json({ message: 'Planning Horizon and planning result created successfully' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
     }
+
 });
 
 // Get all Planning Horizons

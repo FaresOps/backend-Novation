@@ -26,9 +26,7 @@ const ContactRouter = require('./routes/contacts');
 app.use('/contact', ContactRouter);
 const Contact = require('./models/contact');
 
-// const DegreebicRouter = require('./routes/degreebics');
-// app.use('/degreebics', DegreebicRouter);
-// const Degreebics = require('./models/backups/degreebic');
+const Degreebics = require('./models/backups/degreebic');
 
 // const DegreecostRouter = require('./routes/degreecosts');
 // app.use('/degreecost', DegreecostRouter);
@@ -94,8 +92,8 @@ mongoose.connect('mongodb+srv://fares:fares@farescluster.ys3ggbm.mongodb.net/', 
 
 
 const port = 3000;
-const ipAddress = '0.0.0.0'; // Replace with your PC's IPv4 address
-app.listen(port,  ipAddress,() => {
+//const ipAddress = '192.168.1.16'; // Replace with your PC's IPv4 address
+app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 
 });

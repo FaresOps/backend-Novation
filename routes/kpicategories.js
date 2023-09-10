@@ -1,11 +1,11 @@
+const express = require('express');
+const router = express.Router();
 const { Company } = require('../models/company');
 const { Kpicategorie } = require('../models/kpicategorie');
 const { Kpiresults } = require('../models/resultats/kpiresults');
-// const { Degreebic } = require('../models/backups/degreebic');
+const { Degreebic } = require('../models/backups/degreebic');
 const { Dimension } = require('../models/dimension');
 const { Bicresultats } = require('../models/resultats/bicresultats');
-const express = require('express');
-const router = express.Router();
 
 
 // Create a new Kpicategorie
@@ -333,53 +333,84 @@ router.post('/create', async (req, res) => {
         });
         await kpiresult.save();
 
-        const company = await Company.findOne({ assessmentRecord });
+        const company = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
+        console.log(company);
         if (!company) {
-            return res.status(404).send('Company not found');
+            return res.status(404).send('Company data not found for the specified assessment record');
         }
-        const { indusGroup } = company;
 
-        const degreebic = await Degreebic.findOne({ indusGroup });
-        if (!degreebic) {
-            return res.status(404).send('Degreebic data not found');
+        const indusGroup = company.indusGroup;
+        console.log(indusGroup);
+        if (!indusGroup) {
+            return res.status(404).send('IndusGroup not found for the specified assessment record');
         }
+        const degreebic = await Degreebic.findOne({ biccategorie: indusGroup });
+
+        if (!degreebic) {
+            return res.status(404).send('Degreebic data not found for the specified indusGroup');
+        }
+
+        console.log(degreebic);
 
         const dimension = await Dimension.find({ assessmentRecord });
         if (!dimension) {
             return res.status(404).send('Dimension data not found');
         }
+        const dimensionAssements = dimension.map(dimension => dimension.dimensionAssement);
+        console.log(degreebic.technology[0].shopfloorintelligence - dimensionAssements[9]);
 
         const process = {
-            verticalintegration: degreebic.process.verticalintegration[indusGroup] - (dimension.dimension === 1),
-            horizontalintegration: degreebic.process.horizontalintegration[indusGroup] - (dimension.dimension === 2),
-            integratedproductlifecycle: degreebic.process.integratedproductlifecycle[indusGroup] - (dimension.dimension === 3),
+            verticalintegration: degreebic.process[0].verticalintegration - dimensionAssements[0],
+            horizontalintegration: degreebic.process[0].horizontalintegration - dimensionAssements[1],
+            integratedproductlifecycle: degreebic.process[0].integratedproductlifecycle - dimensionAssements[2],
         };
-
         const technology = {
-            shopfloorautomation: degreebic.technology.shopfloorautomation[indusGroup] - (dimension.dimension === 4),
-            enterpriseautomation: degreebic.technology.enterpriseautomation[indusGroup] - (dimension.dimension === 5),
-            facilityautomation: degreebic.technology.facilityautomation[indusGroup] - (dimension.dimension === 6),
-            shopfloorconnectivity: degreebic.technology.shopfloorconnectivity[indusGroup] - (dimension.dimension === 7),
-            entrepriseconnectivity: degreebic.technology.entrepriseconnectivity[indusGroup] - (dimension.dimension === 8),
-            facilityconnectivity: degreebic.technology.facilityconnectivity[indusGroup] - (dimension.dimension === 9),
-            shopfloorintelligence: degreebic.technology.shopfloorintelligence[indusGroup] - (dimension.dimension === 10),
-            entrepriseintelligence: degreebic.technology.entrepriseintelligence[indusGroup] - (dimension.dimension === 11),
-            facilityintelligence: degreebic.technology.facilityintelligence[indusGroup] - (dimension.dimension === 12),
+            shopfloorautomation: degreebic.technology[0].shopfloorautomation - dimensionAssements[3],
+            enterpriseautomation: degreebic.technology[0].enterpriseautomation - dimensionAssements[4],
+            facilityautomation: degreebic.technology[0].facilityautomation - dimensionAssements[5],
+            shopfloorconnectivity: degreebic.technology[0].shopfloorconnectivity - dimensionAssements[6],
+            entrepriseconnectivity: degreebic.technology[0].entrepriseconnectivity - dimensionAssements[7],
+            facilityconnectivity: degreebic.technology[0].facilityconnectivity - dimensionAssements[8],
+            shopfloorintelligence: degreebic.technology[0].shopfloorintelligence - dimensionAssements[9],
+            entrepriseintelligence: degreebic.technology[0].entrepriseintelligence - dimensionAssements[10],
+            facilityintelligence: degreebic.technology[0].facilityintelligence - dimensionAssements[11],
         };
 
         const organization = {
-            workforcelearninganddevelopment: degreebic.organization.workforcelearninganddevelopment[indusGroup] - (dimension.dimension === 13),
-            leadershipcompetency: degreebic.organization.leadershipcompetency[indusGroup] - (dimension.dimension === 14),
-            interandintracompanycollaboration: degreebic.organization.interandintracompanycollaboration[indusGroup] - (dimension.dimension === 15),
-            strategyandgovernance: degreebic.organization.strategyandgovernance[indusGroup] - (dimension.dimension === 16),
+            workforcelearninganddevelopment: degreebic.organization[0].workforcelearninganddevelopment - dimensionAssements[12],
+            leadershipcompetency: degreebic.organization[0].leadershipcompetency - dimensionAssements[13],
+            interandintracompanycollaboration: degreebic.organization[0].interandintracompanycollaboration - dimensionAssements[14],
+            strategyandgovernance: degreebic.organization[0].strategyandgovernance - dimensionAssements[15],
         };
+
 
         const bicresults = new Bicresultats({
             assessmentRecord,
-            process: [process],
-            technology: [technology],
-            organization: [organization],
+            process: {
+                verticalintegration: process.verticalintegration,
+                horizontalintegration: process.horizontalintegration,
+                integratedproductlifecycle: process.integratedproductlifecycle
+            },
+            technology: {
+                shopfloorautomation: technology.shopfloorautomation,
+                enterpriseautomation: technology.enterpriseautomation,
+                facilityautomation: technology.facilityautomation,
+                shopfloorconnectivity: technology.shopfloorconnectivity,
+                entrepriseconnectivity: technology.entrepriseconnectivity,
+                facilityconnectivity:technology.facilityconnectivity,
+                shopfloorintelligence:technology.shopfloorintelligence,
+                entrepriseintelligence: technology.entrepriseintelligence,
+                facilityintelligence:technology.facilityintelligence,
+
+            },
+            organization: {
+                workforcelearninganddevelopment: organization.workforcelearninganddevelopment,
+                leadershipcompetency: organization.leadershipcompetency,
+                interandintracompanycollaboration: organization.interandintracompanycollaboration,
+                strategyandgovernance: organization.strategyandgovernance
+            },
         });
+
 
         await bicresults.save();
         res.status(201).json({ message: 'Kpicategorie and kpi results and bicresulats  created successfully' });
