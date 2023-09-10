@@ -22,13 +22,7 @@ router.post('/create', async (req, res) => {
             tactical,
             operational,
         });
-        console.log(strategic);
-
-
         await planningHorizon.save();
-
-        // Create Kpiresults based on conditions
-        // problem
         let planning;
         if (strategic && !tactical && !operational) {
             planning = new Planningresults({
