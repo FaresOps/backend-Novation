@@ -22,6 +22,8 @@ router.post('/create', async (req, res) => {
             tactical,
             operational,
         });
+        console.log(strategic);
+
 
         await planningHorizon.save();
 
