@@ -1,6 +1,7 @@
 const { Annualrevenue } = require('../models/annualrevenue');
 const { Company } = require('../models/company');
 const { Anualrevcost } = require('../models/resultats/anualrevcost'); //
+const { Anualrevcostnormalized } = require('../models/normalize/anualrevcostnormalize');
 const express = require('express');
 const router = express.Router();
 
@@ -234,7 +235,42 @@ router.post('/create', async (req, res) => {
                     strategyandgovernance: element16
                 }]
             });
+
+            const sum = element1 + element10 + element11 + element12 + element13 + element14 + element15 + element2 + element4 + element8 + element9 + element3 + element5 + element6 + element7 + element16
+
+            console.log(sum);
+
+            const anualrevcostnormalize = new Anualrevcostnormalized({
+                assessmentRecord: req.body.assessmentRecord,
+                process: [{
+                    verticalintegration: element1/sum,
+                    horizontalintegration: element2/sum,
+                    integratedproductlifecycle: element3/sum
+                }],
+                technology: [{
+                    shopfloorautomation: element4/sum,
+                    enterpriseautomation: element5/sum,
+                    facilityautomation: element6/sum,
+                    shopfloorconnectivity: element7/sum,
+                    entrepriseconnectivity: element8/sum,
+                    facilityconnectivity: element9/sum,
+                    shopfloorintelligence: element10/sum,
+                    entrepriseintelligence: element11/sum,
+                    facilityintelligence: element12/sum
+                }],
+                organization: [{
+                    workforcelearninganddevelopment: element13/sum,
+                    leadershipcompetency: element14/sum,
+                    interandintracompanycollaboration: element15/sum,
+                    strategyandgovernance: element16/sum
+                }]
+            });
+
+
+
             await anualrevcost.save();
+            await anualrevcostnormalize.save();
+
             res.status(201).json({ message: 'Company Annualrevenue and Anualrevcost created successfully' });
         } else {
             res.status(404).json({ error: 'Company not found' });

@@ -5,11 +5,6 @@ const mongoose = require('mongoose');
 
 const resultSchema = mongoose.Schema({
     assessmentRecord:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Company',
-        required: true
-    },
-    planningHorizontal: {
         type: String,
         required: true
     },

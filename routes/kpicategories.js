@@ -6,6 +6,8 @@ const { Kpiresults } = require('../models/resultats/kpiresults');
 const { Degreebic } = require('../models/backups/degreebic');
 const { Dimension } = require('../models/dimension');
 const { Bicresultats } = require('../models/resultats/bicresultats');
+const { Bicresultatsnormalize } = require('../models/normalize/bicresultatsnormalize');
+const {Kpiresultsnormalize} = require('../models/normalize/kpiresultsnormalize');
 
 
 // Create a new Kpicategorie
@@ -333,14 +335,41 @@ router.post('/create', async (req, res) => {
         });
         await kpiresult.save();
 
+        const sum = element1 + element10 + element11 + element12 + element13 + element14 + element15 + element2 + element4 + element8 + element9 + element3 + element5 + element6 + element7 + element16
+
+        const kpiresultsnormalize = new Kpiresultsnormalize({
+            assessmentRecord: req.body.assessmentRecord,
+            process: [{
+                verticalintegration: element1/sum,
+                horizontalintegration: element2/sum,
+                integratedproductlifecycle: element3/sum
+            }],
+            technology: [{
+                shopfloorautomation: element4/sum,
+                enterpriseautomation: element5/sum,
+                facilityautomation: element6/sum,
+                shopfloorconnectivity: element7/sum,
+                entrepriseconnectivity: element8/sum,
+                facilityconnectivity: element9/sum,
+                shopfloorintelligence: element10/sum,
+                entrepriseintelligence: element11/sum,
+                facilityintelligence: element12/sum
+            }],
+            organization: [{
+                workforcelearninganddevelopment: element13/sum,
+                leadershipcompetency: element14/sum,
+                interandintracompanycollaboration: element15/sum,
+                strategyandgovernance: element16/sum
+            }]
+        });
+        await kpiresultsnormalize.save();
+        
         const company = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
-        console.log(company);
         if (!company) {
             return res.status(404).send('Company data not found for the specified assessment record');
         }
 
         const indusGroup = company.indusGroup;
-        console.log(indusGroup);
         if (!indusGroup) {
             return res.status(404).send('IndusGroup not found for the specified assessment record');
         }
@@ -350,14 +379,12 @@ router.post('/create', async (req, res) => {
             return res.status(404).send('Degreebic data not found for the specified indusGroup');
         }
 
-        console.log(degreebic);
 
         const dimension = await Dimension.find({ assessmentRecord });
         if (!dimension) {
             return res.status(404).send('Dimension data not found');
         }
         const dimensionAssements = dimension.map(dimension => dimension.dimensionAssement);
-        console.log(degreebic.technology[0].shopfloorintelligence - dimensionAssements[9]);
 
         const process = {
             verticalintegration: degreebic.process[0].verticalintegration - dimensionAssements[0],
@@ -397,10 +424,10 @@ router.post('/create', async (req, res) => {
                 facilityautomation: technology.facilityautomation,
                 shopfloorconnectivity: technology.shopfloorconnectivity,
                 entrepriseconnectivity: technology.entrepriseconnectivity,
-                facilityconnectivity:technology.facilityconnectivity,
-                shopfloorintelligence:technology.shopfloorintelligence,
+                facilityconnectivity: technology.facilityconnectivity,
+                shopfloorintelligence: technology.shopfloorintelligence,
                 entrepriseintelligence: technology.entrepriseintelligence,
-                facilityintelligence:technology.facilityintelligence,
+                facilityintelligence: technology.facilityintelligence,
 
             },
             organization: {
@@ -411,8 +438,59 @@ router.post('/create', async (req, res) => {
             },
         });
 
+        const sumSpecificValues =
+            process.verticalintegration +
+            process.horizontalintegration +
+            process.integratedproductlifecycle +
+            technology.shopfloorautomation +
+            technology.enterpriseautomation +
+            technology.facilityautomation +
+            technology.shopfloorconnectivity +
+            technology.entrepriseconnectivity +
+            technology.facilityconnectivity +
+            technology.shopfloorintelligence +
+            technology.entrepriseintelligence +
+            technology.facilityintelligence +
+            organization.workforcelearninganddevelopment +
+            organization.leadershipcompetency +
+            organization.interandintracompanycollaboration +
+            organization.strategyandgovernance;
+
+
+
+        console.log(sumSpecificValues)
+        console.log(process.verticalintegration / sumSpecificValues);
+
+        const bicresultsnormalize = new Bicresultatsnormalize({
+            assessmentRecord,
+            process: {
+                verticalintegration: process.verticalintegration / sumSpecificValues,
+                horizontalintegration: process.horizontalintegration / sumSpecificValues,
+                integratedproductlifecycle: process.integratedproductlifecycle / sumSpecificValues
+            },
+            technology: {
+                shopfloorautomation: technology.shopfloorautomation / sumSpecificValues,
+                enterpriseautomation: technology.enterpriseautomation / sumSpecificValues,
+                facilityautomation: technology.facilityautomation / sumSpecificValues,
+                shopfloorconnectivity: technology.shopfloorconnectivity / sumSpecificValues,
+                entrepriseconnectivity: technology.entrepriseconnectivity / sumSpecificValues,
+                facilityconnectivity: technology.facilityconnectivity / sumSpecificValues,
+                shopfloorintelligence: technology.shopfloorintelligence / sumSpecificValues,
+                entrepriseintelligence: technology.entrepriseintelligence / sumSpecificValues,
+                facilityintelligence: technology.facilityintelligence / sumSpecificValues,
+
+            },
+            organization: {
+                workforcelearninganddevelopment: organization.workforcelearninganddevelopment / sumSpecificValues,
+                leadershipcompetency: organization.leadershipcompetency / sumSpecificValues,
+                interandintracompanycollaboration: organization.interandintracompanycollaboration / sumSpecificValues,
+                strategyandgovernance: organization.strategyandgovernance / sumSpecificValues
+            },
+        });
 
         await bicresults.save();
+        await bicresultsnormalize.save();
+
         res.status(201).json({ message: 'Kpicategorie and kpi results and bicresulats  created successfully' });
     } catch (err) {
         console.error(err);

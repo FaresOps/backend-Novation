@@ -40,10 +40,13 @@ const Degreebics = require('./models/backups/degreebic');
 //API Mobile APP
 
 
+const ResultsRouter = require('./routes/results');
+app.use('/Results', ResultsRouter);
+const Result = require('./models/result');
+
 const PanninghorizonRouter = require('./routes/planninghorizons');
 app.use('/Panninghorizon', PanninghorizonRouter);
 const Panninghorizon = require('./models/planninghorizon');
-
 
 
 const KpicategorieRouter = require('./routes/kpicategories');
