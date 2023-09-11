@@ -1,6 +1,6 @@
 const { Company } = require('../models/company');
 const express = require('express');
-const verifyToken = require('../verifytoken');
+// const verifyToken = require('../verifytoken');
 const router = express.Router();
 
 // Create a new company without dimensions
@@ -32,17 +32,17 @@ router.post('/create', async (req, res) => {
         res.status(201).json({ message: 'Company created successfully', assessmentRecord: company.assessmentRecord });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Internal Server Error'+err);
+        res.status(500).send('Internal Server Error' + err);
     }
 });
 
 // Get a list of companies without dimensions
-router.get('/element/:assessmentRecord', verifyToken,async(req,res) => {
+router.get('/element/:assessmentRecord', async (req, res) => {
     try {
         const companyAssessement = req.params.assessmentRecord;
 
         // Use the findById method to find the company by its ID
-        const company = await Company.findOne({assessmentRecord:companyAssessement});
+        const company = await Company.findOne({ assessmentRecord: companyAssessement });
 
         if (!company) {
             // If the company with the specified ID is not found, return a 404 response
@@ -58,7 +58,7 @@ router.get('/element/:assessmentRecord', verifyToken,async(req,res) => {
     }
 
 });
-router.get('/list', verifyToken,async (req, res) => {
+router.get('/list', async (req, res) => {
     try {
         const { preparedBy, indusGroup } = req.query;
 

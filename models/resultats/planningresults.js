@@ -5,15 +5,15 @@ const planningresultatSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    costfactor:{
+    costfactor: {
         type: Number,
         required: true,
     },
-    kpifactor:{
+    kpifactor: {
         type: Number,
         required: true,
     },
-    proximityfactor:{
+    proximityfactor: {
         type: Number,
         required: true,
     }

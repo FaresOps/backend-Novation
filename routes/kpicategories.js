@@ -7,7 +7,7 @@ const { Degreebic } = require('../models/backups/degreebic');
 const { Dimension } = require('../models/dimension');
 const { Bicresultats } = require('../models/resultats/bicresultats');
 const { Bicresultatsnormalize } = require('../models/normalize/bicresultatsnormalize');
-const {Kpiresultsnormalize} = require('../models/normalize/kpiresultsnormalize');
+const { Kpiresultsnormalize } = require('../models/normalize/kpiresultsnormalize');
 
 
 // Create a new Kpicategorie
@@ -340,30 +340,30 @@ router.post('/create', async (req, res) => {
         const kpiresultsnormalize = new Kpiresultsnormalize({
             assessmentRecord: req.body.assessmentRecord,
             process: [{
-                verticalintegration: element1/sum,
-                horizontalintegration: element2/sum,
-                integratedproductlifecycle: element3/sum
+                verticalintegration: element1 / sum,
+                horizontalintegration: element2 / sum,
+                integratedproductlifecycle: element3 / sum
             }],
             technology: [{
-                shopfloorautomation: element4/sum,
-                enterpriseautomation: element5/sum,
-                facilityautomation: element6/sum,
-                shopfloorconnectivity: element7/sum,
-                entrepriseconnectivity: element8/sum,
-                facilityconnectivity: element9/sum,
-                shopfloorintelligence: element10/sum,
-                entrepriseintelligence: element11/sum,
-                facilityintelligence: element12/sum
+                shopfloorautomation: element4 / sum,
+                enterpriseautomation: element5 / sum,
+                facilityautomation: element6 / sum,
+                shopfloorconnectivity: element7 / sum,
+                entrepriseconnectivity: element8 / sum,
+                facilityconnectivity: element9 / sum,
+                shopfloorintelligence: element10 / sum,
+                entrepriseintelligence: element11 / sum,
+                facilityintelligence: element12 / sum
             }],
             organization: [{
-                workforcelearninganddevelopment: element13/sum,
-                leadershipcompetency: element14/sum,
-                interandintracompanycollaboration: element15/sum,
-                strategyandgovernance: element16/sum
+                workforcelearninganddevelopment: element13 / sum,
+                leadershipcompetency: element14 / sum,
+                interandintracompanycollaboration: element15 / sum,
+                strategyandgovernance: element16 / sum
             }]
         });
         await kpiresultsnormalize.save();
-        
+
         const company = await Company.findOne({ assessmentRecord: req.body.assessmentRecord });
         if (!company) {
             return res.status(404).send('Company data not found for the specified assessment record');
@@ -391,6 +391,8 @@ router.post('/create', async (req, res) => {
             horizontalintegration: degreebic.process[0].horizontalintegration - dimensionAssements[1],
             integratedproductlifecycle: degreebic.process[0].integratedproductlifecycle - dimensionAssements[2],
         };
+        console.log(degreebic.process[0].verticalintegration);
+
         const technology = {
             shopfloorautomation: degreebic.technology[0].shopfloorautomation - dimensionAssements[3],
             enterpriseautomation: degreebic.technology[0].enterpriseautomation - dimensionAssements[4],

@@ -81,7 +81,8 @@ router.get('/:id', async (req, res) => {
         annualrevenue.technology[0].facilityintelligence * planning.costfactor / 100 +
         kpiresult.technology[0].facilityintelligence * planning.kpifactor / 100 +
         bicresulst.technology[0].facilityintelligence * planning.proximityfactor / 100
-
+    console.log(facilityintelligence);
+    console.log(shopfloorintelligence);
 
 
     const workforcelearninganddevelopment =
@@ -118,19 +119,8 @@ router.get('/:id', async (req, res) => {
         entrepriseintelligence,
         facilityintelligence
     };
+    const technologyfinal = Object.keys(list1).reduce((a, b) => list1[a] > list1[b] ? a : b);
 
-    let technologyfinal = ""; // Initialize with an empty string
-    let maxVariableValue1 = -Infinity; // Initialize with negative infinity
-
-    // Loop list1 and find the maximum value
-    for (const variableName in list1) {
-        const variableValue = list1[variableName];
-
-        if (variableValue > maxVariableValue1) {
-            maxVariableValue = variableValue;
-            technologyfinal = variableName;
-        }
-    }
 
     const list2 = {
         verticalintegration,
@@ -160,16 +150,6 @@ router.get('/:id', async (req, res) => {
 
 
     const maxVariable = Object.keys(variables).reduce((a, b) => variables[a] > variables[b] ? a : b);
-
-
-
-
-
-
-
-
-
-
 
 
     const resultat = new Result({
