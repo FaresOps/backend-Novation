@@ -27,7 +27,7 @@ router.post('/create', async (req, res) => {
         if (strategic && !tactical && !operational) {
             planning = new Planningresults({
                 assessmentRecord: req.body.assessmentRecord,
-                planningName: Stratigic,
+                planningName: "Stratigic",
                 costfactor: 30,
                 kpifactor: 40,
                 proximityfactor: 30,
@@ -35,7 +35,7 @@ router.post('/create', async (req, res) => {
         } else if (tactical && !strategic && !operational) {
             planning = new Planningresults({
                 assessmentRecord: req.body.assessmentRecord,
-                planningName: Tactical,
+                planningName: "Tactical",
                 costfactor: 45,
                 kpifactor: 30,
                 proximityfactor: 25,
@@ -43,7 +43,7 @@ router.post('/create', async (req, res) => {
         } else if (operational && !strategic && !tactical) {
             planning = new Planningresults({
                 assessmentRecord: req.body.assessmentRecord,
-                planningName: operational,
+                planningName: "operational",
                 costfactor: 60,
                 kpifactor: 20,
                 proximityfactor: 20,
