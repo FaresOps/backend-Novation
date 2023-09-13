@@ -5,6 +5,10 @@ const planningresultatSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    planningName:{
+        type: String,
+        required: true,
+    },
     costfactor: {
         type: Number,
         required: true,

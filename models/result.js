@@ -8,6 +8,10 @@ const resultSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    planningName:{
+        type: String,
+        required: true
+    },
     costFactor: {
         type: Number,
         required: true

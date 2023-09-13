@@ -69,18 +69,20 @@ router.get('/', async (req, res) => {
 
         // secteur d'activité graphs
         const conditionactivite = [
-            'Transportation',
-            'Chemical',
+            'Aerospace',
+            'Automotive',
             'Electronics',
-            'Energy',
-            'Fast Moving Consumer Goods',
+            'Energy & Chemical (Downstream)',
+            'Food & Beverages',
             'General Manufacturing',
-            'Metal and Mining',
-            'Advanced Manufacturing',
-            'Pharmaceuticals & Healthcare',
-            'Paper',
-            'Utilities',
-            'Textil, Leather, Apparels'
+            'Logistics',
+            'Machinery & Equipment',
+            'Medical Technology',
+            'Oil & Gas',
+            'Pharmaceuticals',
+            'Precision Instruments',
+            'Textile, Clothing, Leather & Footwear',
+            'Semiconductors'
         ];
 
         const secteurgraphe = await Promise.all(
