@@ -1,11 +1,12 @@
 const { Dimension } = require('../models/dimension');
+// const { Company } = require('../models/company');
 const express = require('express');
 const verifyToken = require('../verifytoken');
 
 const router = express.Router();
 
 // Create a new dimension (dimension database)
-router.post('/create', verifyToken, async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         const existingDimension = await Dimension.findOne({ _id: req.body._id });
         if (existingDimension) {
@@ -20,6 +21,7 @@ router.post('/create', verifyToken, async (req, res) => {
         });
 
         await dimension.save();
+
         res.send('Dimension saved successfully!');
     } catch (err) {
         console.error(err);

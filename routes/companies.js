@@ -23,7 +23,8 @@ router.post('/create', async (req, res) => {
             income: req.body.income,
             size: req.body.size,
             factorysection: req.body.factorysection,
-            preparedBy: req.body.preparedBy
+            preparedBy: req.body.preparedBy,
+            advancement: req.body.advancement
         };
 
         const company = new Company(companyData);
@@ -33,6 +34,28 @@ router.post('/create', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error' + err);
+    }
+});
+
+
+router.put('/update/:id', async (req, res) => {
+    try {
+  
+        const company = await Company.findOne({ assessmentRecord: req.params.id });
+
+        if (!company) {
+            return res.status(404).send('Company not found');
+        }
+        console.log(companyAssessmentRecord);
+        company.advancement = (company.advancement || 0) + 6.75;
+        console.log(company.advancement);
+        await company.save();
+
+        res.status(200).send('Company advancement updated successfully');
+    } catch (error) {
+        // Handle any potential errors here
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
 });
 

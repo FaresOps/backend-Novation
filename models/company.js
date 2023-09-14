@@ -66,6 +66,10 @@ const companySchema = mongoose.Schema({
     preparedBy: {
         type: String,
         required: true
+    },
+    advancement:{
+        type: Number,
+        required: true
     }
 });
 

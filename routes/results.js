@@ -1,5 +1,7 @@
 const { Result } = require('../models/result');
 const express = require('express');
+
+
 const { Anualrevcostnormalized } = require('../models/normalize/anualrevcostnormalize');
 const { Bicresultatsnormalize } = require('../models/normalize/bicresultatsnormalize');
 const { Kpiresultsnormalize } = require('../models/normalize/kpiresultsnormalize');

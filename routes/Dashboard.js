@@ -1,33 +1,25 @@
 const { Company } = require('../models/company');
 const express = require('express');
+const NodeCache = require('node-cache');
 const router = express.Router();
+
+
+const cache = new NodeCache({ stdTTL: 300 });
+
 
 router.get('/', async (req, res) => {
     try {
+
+        const cachedData = cache.get('cachedData');
+        if (cachedData) {
+            console.log('Using cached data');
+            return res.json(cachedData);
+        }
+
+        // Count the total number of documents
         const casvalide = await Company.countDocuments();
+        const casnonvalide = await Company.countDocuments({ advancement: { $lt: 100 } });
 
-        // Number cas valide
-        const pipeline = [
-            {
-                $group: {
-                    _id: '$assessmentRecord',
-                    count: { $sum: 1 }
-                }
-            },
-            {
-                $match: {
-                    count: { $lt: 16 }
-                }
-            },
-            {
-                $count: 'casnonvalide'
-            }
-        ];
-
-        const casnonvalideResult = await Company.aggregate(pipeline);
-        const casnonvalide = casnonvalideResult.length > 0 ? casnonvalideResult[0].casnonvalide : 0;
-
-        // graphe income
         const incomePipeline = [
             {
                 $bucket: {
@@ -41,9 +33,6 @@ router.get('/', async (req, res) => {
             }
         ];
 
-        const incomegraph = await Company.aggregate(incomePipeline);
-
-        // graphe size
         const sizePipeline = [
             {
                 $bucket: {
@@ -57,17 +46,23 @@ router.get('/', async (req, res) => {
             }
         ];
 
-        const sizegraphe = await Company.aggregate(sizePipeline);
+        // Execute aggregation pipelines concurrently
+        const [incomegraph, sizegraphe] = await Promise.all([
+            Company.aggregate(incomePipeline),
+            Company.aggregate(sizePipeline)
+        ]);
 
-        // graphe exportatrice
-        const totalexportcount = await Company.countDocuments({ exportation: true });
+        // Count the total number of exportation and multiproduction cases
+        const [totalexportcount, multiprodcount] = await Promise.all([
+            Company.countDocuments({ exportation: true }),
+            Company.countDocuments({ multiproduction: true })
+        ]);
+
+        // Calculate non-total export and unique production counts
         const nontotalexportcount = casvalide - totalexportcount;
-
-        // graphe de production
-        const multiprodcount = await Company.countDocuments({ multiproduction: true });
         const uniqueprodcount = casvalide - multiprodcount;
 
-        // secteur d'activité graphs
+        // Define conditions for sector activity graphs
         const conditionactivite = [
             'Aerospace',
             'Automotive',
@@ -85,12 +80,25 @@ router.get('/', async (req, res) => {
             'Semiconductors'
         ];
 
+        // Execute queries for sector activity graphs concurrently
         const secteurgraphe = await Promise.all(
             conditionactivite.map(async condition => {
                 const count = await Company.countDocuments({ indusGroup: condition });
                 return { label: condition, count };
             })
         );
+
+        cache.set('cachedData', {
+            casvalide,
+            casnonvalide,
+            incomegraph,
+            sizegraphe,
+            totalexportcount,
+            nontotalexportcount,
+            multiprodcount,
+            uniqueprodcount,
+            secteurgraphe,
+        });
 
         // Send the response containing all the data
         res.json({
@@ -102,7 +110,7 @@ router.get('/', async (req, res) => {
             nontotalexportcount,
             multiprodcount,
             uniqueprodcount,
-            secteurgraphe
+            secteurgraphe,
         });
     } catch (error) {
         console.error(error);
