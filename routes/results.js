@@ -1,22 +1,19 @@
 const { Result } = require('../models/result');
-const express = require('express');
-
-
+const { Annualrevenue } = require('../models/annualrevenue');
+const { Kpicategorie } = require('../models/kpicategorie');
 const { Anualrevcostnormalized } = require('../models/normalize/anualrevcostnormalize');
 const { Bicresultatsnormalize } = require('../models/normalize/bicresultatsnormalize');
 const { Kpiresultsnormalize } = require('../models/normalize/kpiresultsnormalize');
 const { Planningresults } = require('../models/resultats/planningresults');
+const express = require('express');
 // const verifyToken = require('../verifytoken');
 const router = express.Router();
 
 // show result from result data base
 router.get('/:id', async (req, res) => {
     const assessmentRecord = await req.params.id;
-    const existresult = await Result.findOne({ assessmentRecord: req.params.id });
-    if (existresult) {
-        res.status(200).send(existresult);
-
-    }
+    const annualrev = await Annualrevenue.findOne({ assessmentRecord: assessmentRecord });
+    const kpis = await Kpicategorie.findOne({ assessmentRecord: assessmentRecord });
     const annualrevenue = await Anualrevcostnormalized.findOne({ assessmentRecord: assessmentRecord })
     const kpiresult = await Kpiresultsnormalize.findOne({ assessmentRecord: assessmentRecord })
     const bicresulst = await Bicresultatsnormalize.findOne({ assessmentRecord: assessmentRecord })
@@ -24,6 +21,8 @@ router.get('/:id', async (req, res) => {
     console.log(assessmentRecord)
     console.log(planning)
     console.log(planning.kpifactor)
+    console.log(kpis);
+    console.log(annualrev);
     const verticalintegration =
         annualrevenue.process[0].verticalintegration * planning.costfactor / 100 +
         kpiresult.process[0].verticalintegration * planning.kpifactor / 100 +
@@ -164,7 +163,17 @@ router.get('/:id', async (req, res) => {
 
     await resultat.save();
 
-    res.status(200).send(existresult);
+    const existresult = await Result.findOne({ assessmentRecord: req.params.id });
+    if (existresult) {
+        res.json(
+            {
+                resultat,
+                annualrev,
+                kpis
+            }
+        );
+
+    }
 })
 
 
