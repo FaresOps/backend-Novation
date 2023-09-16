@@ -17,7 +17,7 @@ router.post('/create', async (req, res) => {
 });
 
 // Get scope of assessments for a company by ID
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const scope = await Scope.findById(req.params.id);
 
