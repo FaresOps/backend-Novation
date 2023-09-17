@@ -71,7 +71,6 @@ const companySchema = mongoose.Schema({
     },
     advancement: {
         type: Number,
-        required: true
     }
 });
 
