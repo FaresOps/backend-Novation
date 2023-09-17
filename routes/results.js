@@ -1,4 +1,5 @@
 const { Result } = require('../models/result');
+const { Company } = require('../models/company');
 const { Annualrevenue } = require('../models/annualrevenue');
 const { Kpicategorie } = require('../models/kpicategorie');
 const { Anualrevcostnormalized } = require('../models/normalize/anualrevcostnormalize');
@@ -6,23 +7,33 @@ const { Bicresultatsnormalize } = require('../models/normalize/bicresultatsnorma
 const { Kpiresultsnormalize } = require('../models/normalize/kpiresultsnormalize');
 const { Planningresults } = require('../models/resultats/planningresults');
 const express = require('express');
+const NodeCache = require('node-cache');
+const myCache = new NodeCache();
 // const verifyToken = require('../verifytoken');
 const router = express.Router();
 
+const cache = new NodeCache({ stdTTL: 300 });
+
+
 // show result from result data base
 router.get('/:id', async (req, res) => {
+
+    const cachedData = cache.get('cachedData');
+    if (cachedData) {
+        console.log('Using cached data');
+        return res.json(cachedData);
+    }
     const assessmentRecord = await req.params.id;
+    const indus = await Company.findOne({ assessmentRecord: assessmentRecord });
     const annualrev = await Annualrevenue.findOne({ assessmentRecord: assessmentRecord });
     const kpis = await Kpicategorie.findOne({ assessmentRecord: assessmentRecord });
     const annualrevenue = await Anualrevcostnormalized.findOne({ assessmentRecord: assessmentRecord })
     const kpiresult = await Kpiresultsnormalize.findOne({ assessmentRecord: assessmentRecord })
     const bicresulst = await Bicresultatsnormalize.findOne({ assessmentRecord: assessmentRecord })
     const planning = await Planningresults.findOne({ assessmentRecord: assessmentRecord })
-    console.log(assessmentRecord)
-    console.log(planning)
-    console.log(planning.kpifactor)
-    console.log(kpis);
-    console.log(annualrev);
+
+    const indusgroup = indus.indusGroup;
+
     const verticalintegration =
         annualrevenue.process[0].verticalintegration * planning.costfactor / 100 +
         kpiresult.process[0].verticalintegration * planning.kpifactor / 100 +
@@ -139,6 +150,8 @@ router.get('/:id', async (req, res) => {
         }
     }
 
+
+
     const variables = {
         workforcelearninganddevelopment,
         leadershipcompetency,
@@ -163,10 +176,20 @@ router.get('/:id', async (req, res) => {
 
     await resultat.save();
 
+
+    cache.set('cachedData', {
+        indusgroup,
+        resultat,
+        annualrev,
+        kpis
+    });
+
+
     const existresult = await Result.findOne({ assessmentRecord: req.params.id });
     if (existresult) {
         res.json(
             {
+                indusgroup,
                 resultat,
                 annualrev,
                 kpis

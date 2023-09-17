@@ -30,6 +30,16 @@ router.post('/create', async (req, res) => {
     }
 });
 
+router.delete('/delete-all', async (req, res) => {
+    try {
+        await Contact.deleteMany({}); // This will delete all contacts
+        res.status(200).send('All contacts deleted successfully');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 // Get a list of contacts
 router.get('/list', async (req, res) => {
     try {

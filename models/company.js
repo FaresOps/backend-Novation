@@ -12,6 +12,7 @@ const validIndusGroups = [
     'Machinery & Equipment',
     'Medical Technology',
     'Oil & Gas',
+    'Paper',
     'Pharmaceuticals',
     'Precision Instruments',
     'Textile, Clothing, Leather & Footwear',
@@ -68,7 +69,7 @@ const companySchema = mongoose.Schema({
         type: String,
         required: true
     },
-    advancement:{
+    advancement: {
         type: Number,
         required: true
     }
