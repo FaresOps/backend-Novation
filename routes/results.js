@@ -8,21 +8,14 @@ const { Kpiresultsnormalize } = require('../models/normalize/kpiresultsnormalize
 const { Planningresults } = require('../models/resultats/planningresults');
 const express = require('express');
 const NodeCache = require('node-cache');
-const myCache = new NodeCache();
 // const verifyToken = require('../verifytoken');
 const router = express.Router();
 
-const cache = new NodeCache({ stdTTL: 300 });
 
 
 // show result from result data base
 router.get('/:id', async (req, res) => {
 
-    const cachedData = cache.get('cachedData');
-    if (cachedData) {
-        console.log('Using cached data');
-        return res.json(cachedData);
-    }
     const assessmentRecord = await req.params.id;
     const indus = await Company.findOne({ assessmentRecord: assessmentRecord });
     const annualrev = await Annualrevenue.findOne({ assessmentRecord: assessmentRecord });
@@ -117,6 +110,26 @@ router.get('/:id', async (req, res) => {
         kpiresult.organization[0].strategyandgovernance * planning.kpifactor / 100 +
         bicresulst.organization[0].strategyandgovernance * planning.proximityfactor / 100
 
+
+
+
+    const list2 = {
+        verticalintegration,
+        horizontalintegration,
+        integratedproductlifecycle
+    };
+
+    const processfinal = Object.keys(list2).reduce((a, b) => list2[a] > list2[b] ? a : b);
+
+
+    // Create a copy of variables without the maximum value
+    const list2WithoutMax1 = { ...list2 };
+    delete list2WithoutMax1[processfinal];
+
+    // Find the second maximum value in variablesWithoutMax1
+    const secondMaxInList2 = Object.keys(list2WithoutMax1).reduce((a, b) => list2WithoutMax1[a] > list2WithoutMax1[b] ? a : b);
+
+
     const list1 = {
         shopfloorautomation,
         enterpriseautomation,
@@ -135,32 +148,7 @@ router.get('/:id', async (req, res) => {
     delete list1WithoutMax1[technologyfinal];
 
     // Find the second maximum value in list1WithoutMax1
-    const technologyfinal2 = Object.keys(list1WithoutMax1).reduce((a, b) => list1WithoutMax1[a] > list1WithoutMax1[b] ? a : b);
-
-
-    const list2 = {
-        verticalintegration,
-        horizontalintegration,
-        integratedproductlifecycle
-    };
-
-    let processfinal = ""; // Initialize with an empty string
-    let maxVariableValue2 = -Infinity; // Initialize with negative infinity
-
-    for (const variableName in list2) {
-        const variableValue = list2[variableName];
-
-        if (variableValue > maxVariableValue2) {
-            maxVariableValue2 = variableValue;
-            processfinal = variableName;
-        }
-    }
-    const list2WithoutMax1 = { ...list2 };
-    delete list2WithoutMax1[processfinal];
-
-    const processfinal2 = Object.keys(list2WithoutMax1).reduce((a, b) => list2WithoutMax1[a] > list2WithoutMax1[b] ? a : b);
-
-
+    const secondMaxInList1 = Object.keys(list1WithoutMax1).reduce((a, b) => list1WithoutMax1[a] > list1WithoutMax1[b] ? a : b);
 
 
     const variables = {
@@ -170,26 +158,29 @@ router.get('/:id', async (req, res) => {
         strategyandgovernance
     };
 
-
     const maxVariable = Object.keys(variables).reduce((a, b) => variables[a] > variables[b] ? a : b);
-
     const variablesWithoutMax1 = { ...variables };
     delete variablesWithoutMax1[maxVariable];
 
     // Find the second maximum value in variablesWithoutMax1
-    const maxVariable2 = Object.keys(variablesWithoutMax1).reduce((a, b) => variablesWithoutMax1[a] > variablesWithoutMax1[b] ? a : b);
+    const secondMaxInVariables = Object.keys(variablesWithoutMax1).reduce((a, b) => variablesWithoutMax1[a] > variablesWithoutMax1[b] ? a : b);
 
-    let extravariable1, extravariable2, extravariable3;
 
-    if (maxVariable2 >= processfinal2 && maxVariable2 >= technologyfinal2) {
-        extravariable2 = maxVariable2;
-    } else if (processfinal2 >= maxVariable2 && processfinal2 >= technologyfinal2) {
-        extravariable1 = processfinal2;
-    } else {
-        extravariable3 = technologyfinal2;
+    let extravariable1 = "";
+    let extravariable2 = "";
+    let extravariable3 = "";
+
+
+
+    if (list2[secondMaxInList2] >= variables[secondMaxInVariables] && list2[secondMaxInList2] >= list1[secondMaxInList1]) {
+        extravariable1 = secondMaxInList2;
     }
-
-
+    if (list1[secondMaxInList1] >= list2[secondMaxInList2] && list1[secondMaxInList1] >= variables[secondMaxInVariables]){
+        extravariable2 = secondMaxInList1;
+    }
+    if (variables[secondMaxInVariables] >= list2[secondMaxInList2] && variables[secondMaxInVariables] >= list1[secondMaxInList1]) {
+        extravariable3 = secondMaxInVariables;
+    }
 
 
     const resultat = new Result({
@@ -198,21 +189,12 @@ router.get('/:id', async (req, res) => {
         costFactor: planning.costfactor,
         kpiFactor: planning.kpifactor,
         proximity: planning.proximityfactor,
-        process: processfinal + extravariable1,
+        process: processfinal + ',' + extravariable1,
         technology: technologyfinal + ',' + extravariable2,
-        organization: maxVariable + extravariable3
+        organization: maxVariable + ',' + extravariable3
     });
 
     await resultat.save();
-
-
-    cache.set('cachedData', {
-        indusgroup,
-        resultat,
-        annualrev,
-        kpis
-    });
-
 
     const existresult = await Result.findOne({ assessmentRecord: req.params.id });
     if (existresult) {
@@ -227,6 +209,20 @@ router.get('/:id', async (req, res) => {
 
     }
 })
+
+router.delete('/delete-all-results', async (req, res) => {
+    try {
+        const result = await Result.deleteMany({});
+        if (result.deletedCount > 0) {
+            res.status(200).json({ message: 'All documents in the Results collection have been deleted.' });
+        } else {
+            res.status(404).json({ message: 'No documents found to delete in the Results collection.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while deleting documents from the Results collection.' });
+    }
+});
 
 
 
