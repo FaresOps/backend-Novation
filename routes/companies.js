@@ -46,14 +46,11 @@ router.put('/update/:id', async (req, res) => {
         if (!company) {
             return res.status(404).send('Company not found');
         }
-        console.log(companyAssessmentRecord);
         company.advancement = (company.advancement || 0) + 6.75;
-        console.log(company.advancement);
         await company.save();
 
         res.status(200).send('Company advancement updated successfully');
     } catch (error) {
-        // Handle any potential errors here
         console.error(error);
         res.status(500).send('Internal Server Error');
     }

@@ -130,6 +130,13 @@ router.get('/:id', async (req, res) => {
     };
     const technologyfinal = Object.keys(list1).reduce((a, b) => list1[a] > list1[b] ? a : b);
 
+    // Create a copy of list1 without the maximum value
+    const list1WithoutMax1 = { ...list1 };
+    delete list1WithoutMax1[technologyfinal];
+
+    // Find the second maximum value in list1WithoutMax1
+    const technologyfinal2 = Object.keys(list1WithoutMax1).reduce((a, b) => list1WithoutMax1[a] > list1WithoutMax1[b] ? a : b);
+
 
     const list2 = {
         verticalintegration,
@@ -140,7 +147,6 @@ router.get('/:id', async (req, res) => {
     let processfinal = ""; // Initialize with an empty string
     let maxVariableValue2 = -Infinity; // Initialize with negative infinity
 
-    // Loop through variables and find the maximum value
     for (const variableName in list2) {
         const variableValue = list2[variableName];
 
@@ -149,6 +155,11 @@ router.get('/:id', async (req, res) => {
             processfinal = variableName;
         }
     }
+    const list2WithoutMax1 = { ...list2 };
+    delete list2WithoutMax1[processfinal];
+
+    const processfinal2 = Object.keys(list2WithoutMax1).reduce((a, b) => list2WithoutMax1[a] > list2WithoutMax1[b] ? a : b);
+
 
 
 
@@ -162,6 +173,24 @@ router.get('/:id', async (req, res) => {
 
     const maxVariable = Object.keys(variables).reduce((a, b) => variables[a] > variables[b] ? a : b);
 
+    const variablesWithoutMax1 = { ...variables };
+    delete variablesWithoutMax1[maxVariable];
+
+    // Find the second maximum value in variablesWithoutMax1
+    const maxVariable2 = Object.keys(variablesWithoutMax1).reduce((a, b) => variablesWithoutMax1[a] > variablesWithoutMax1[b] ? a : b);
+
+    let extravariable1, extravariable2, extravariable3;
+
+    if (maxVariable2 >= processfinal2 && maxVariable2 >= technologyfinal2) {
+        extravariable2 = maxVariable2;
+    } else if (processfinal2 >= maxVariable2 && processfinal2 >= technologyfinal2) {
+        extravariable1 = processfinal2;
+    } else {
+        extravariable3 = technologyfinal2;
+    }
+
+
+
 
     const resultat = new Result({
         assessmentRecord: req.params.id,
@@ -169,9 +198,9 @@ router.get('/:id', async (req, res) => {
         costFactor: planning.costfactor,
         kpiFactor: planning.kpifactor,
         proximity: planning.proximityfactor,
-        process: processfinal,
-        technology: technologyfinal,
-        organization: maxVariable
+        process: processfinal + extravariable1,
+        technology: technologyfinal + ',' + extravariable2,
+        organization: maxVariable + extravariable3
     });
 
     await resultat.save();
